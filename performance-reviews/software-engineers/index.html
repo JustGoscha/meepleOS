@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Dimensions</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom styles -->
+    <style type="text/tailwind">
+        @layer components {
+            .rating-button {
+                @apply w-8 h-8 rounded-full border-2 border-purple-500 flex items-center justify-center cursor-pointer hover:bg-purple-100 transition-colors;
+            }
+            .rating-button.active {
+                @apply bg-purple-500 text-white;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8 text-purple-800">Tech Dimensions</h1>
+        
+        <div class="grid md:grid-cols-2 gap-8">
+            <!-- Ratings Section -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-2xl font-semibold mb-6">Engineer Rating</h2>
+                
+                <div class="space-y-6">
+                    <!-- Technical Execution -->
+                    <div class="rating-group">
+                        <label class="text-lg font-medium block mb-2">Technical Execution</label>
+                        <div class="flex gap-4">
+                            <button class="rating-button" data-dimension="technicalExecution" data-value="1">1</button>
+                            <button class="rating-button" data-dimension="technicalExecution" data-value="2">2</button>
+                            <button class="rating-button" data-dimension="technicalExecution" data-value="3">3</button>
+                            <button class="rating-button" data-dimension="technicalExecution" data-value="4">4</button>
+                            <button class="rating-button" data-dimension="technicalExecution" data-value="5">5</button>
+                        </div>
+                    </div>
+
+                    <!-- System Design -->
+                    <div class="rating-group">
+                        <label class="text-lg font-medium block mb-2">System Design</label>
+                        <div class="flex gap-4">
+                            <button class="rating-button" data-dimension="systemDesign" data-value="1">1</button>
+                            <button class="rating-button" data-dimension="systemDesign" data-value="2">2</button>
+                            <button class="rating-button" data-dimension="systemDesign" data-value="3">3</button>
+                            <button class="rating-button" data-dimension="systemDesign" data-value="4">4</button>
+                            <button class="rating-button" data-dimension="systemDesign" data-value="5">5</button>
+                        </div>
+                    </div>
+
+                    <!-- Collaboration -->
+                    <div class="rating-group">
+                        <label class="text-lg font-medium block mb-2">Collaboration</label>
+                        <div class="flex gap-4">
+                            <button class="rating-button" data-dimension="collaboration" data-value="1">1</button>
+                            <button class="rating-button" data-dimension="collaboration" data-value="2">2</button>
+                            <button class="rating-button" data-dimension="collaboration" data-value="3">3</button>
+                            <button class="rating-button" data-dimension="collaboration" data-value="4">4</button>
+                            <button class="rating-button" data-dimension="collaboration" data-value="5">5</button>
+                        </div>
+                    </div>
+
+                    <!-- Ownership & Accountability -->
+                    <div class="rating-group">
+                        <label class="text-lg font-medium block mb-2">Ownership & Accountability</label>
+                        <div class="flex gap-4">
+                            <button class="rating-button" data-dimension="ownershipAccountability" data-value="1">1</button>
+                            <button class="rating-button" data-dimension="ownershipAccountability" data-value="2">2</button>
+                            <button class="rating-button" data-dimension="ownershipAccountability" data-value="3">3</button>
+                            <button class="rating-button" data-dimension="ownershipAccountability" data-value="4">4</button>
+                            <button class="rating-button" data-dimension="ownershipAccountability" data-value="5">5</button>
+                        </div>
+                    </div>
+
+                    <!-- Product & Business Understanding -->
+                    <div class="rating-group">
+                        <label class="text-lg font-medium block mb-2">Product & Business Understanding</label>
+                        <div class="flex gap-4">
+                            <button class="rating-button" data-dimension="productBusinessUnderstanding" data-value="1">1</button>
+                            <button class="rating-button" data-dimension="productBusinessUnderstanding" data-value="2">2</button>
+                            <button class="rating-button" data-dimension="productBusinessUnderstanding" data-value="3">3</button>
+                            <button class="rating-button" data-dimension="productBusinessUnderstanding" data-value="4">4</button>
+                            <button class="rating-button" data-dimension="productBusinessUnderstanding" data-value="5">5</button>
+                        </div>
+                    </div>
+
+                    <!-- Growth + Mentorship -->
+                    <div class="rating-group">
+                        <label class="text-lg font-medium block mb-2">Growth + Mentorship</label>
+                        <div class="flex gap-4">
+                            <button class="rating-button" data-dimension="growthMentorship" data-value="1">1</button>
+                            <button class="rating-button" data-dimension="growthMentorship" data-value="2">2</button>
+                            <button class="rating-button" data-dimension="growthMentorship" data-value="3">3</button>
+                            <button class="rating-button" data-dimension="growthMentorship" data-value="4">4</button>
+                            <button class="rating-button" data-dimension="growthMentorship" data-value="5">5</button>
+                        </div>
+                    </div>
+
+                    <!-- Impact -->
+                    <div class="rating-group">
+                        <label class="text-lg font-medium block mb-2">Impact</label>
+                        <div class="flex gap-4">
+                            <button class="rating-button" data-dimension="impact" data-value="1">1</button>
+                            <button class="rating-button" data-dimension="impact" data-value="2">2</button>
+                            <button class="rating-button" data-dimension="impact" data-value="3">3</button>
+                            <button class="rating-button" data-dimension="impact" data-value="4">4</button>
+                            <button class="rating-button" data-dimension="impact" data-value="5">5</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-8 flex gap-4">
+                    <button id="resetBtn" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors">
+                        Reset
+                    </button>
+                    <button id="exportBtn" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors">
+                        Export Chart
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chart Section -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 
