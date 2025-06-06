@@ -11,10 +11,6 @@ A beautiful web-based tool for evaluating technical engineers across 7 key dimen
 
 <img width="1062" alt="image" src="https://github.com/user-attachments/assets/f98ebb77-aa02-4b5d-ae27-9cb32c94b648" />
 
-## ☕ Support This Project
-
-If you find Tech Dimensions useful, consider [buying me a coffee](https://coff.ee/justgoscha) to support continued development and improvements!
-
 ---
 
 ## ✨ Features
@@ -69,3 +65,12 @@ No build step required - just open `index.html` and you're ready to go!
 - **View Progress**: The radar chart updates in real-time with color-coded indicators
 - **Export Results**: Click "Export Trading Card" to download a beautiful PNG summary
 - **Reset Safely**: The reset button includes a confirmation dialog to prevent accidental data loss 
+
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. You are free to use, modify, and distribute this project however you like!
+
+## ☕ Support This Project
+
+If you find this useful, consider [buying me a coffee](https://coff.ee/justgoscha) to support continued development and improvements!
