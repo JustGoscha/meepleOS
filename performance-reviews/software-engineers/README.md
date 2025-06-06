@@ -2,6 +2,12 @@
 
 A beautiful web-based tool for evaluating technical engineers across 7 key dimensions. Visualize engineering competencies using an interactive spider/radar chart with a modern, striking design.
 
+## 🚀 **[Launch Tech Dimensions →](https://justgoscha.github.io/engineer-evaluations/)**
+
+*Try it now! No installation required - runs directly in your browser.*
+
+---
+
 ## ✨ Features
 
 - **Engineer Information**: Enter engineer name and select evaluation level (Junior, Mid, Senior)
