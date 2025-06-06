@@ -1,4 +1,4 @@
-# Tech Dimensions
+# Tech Evaluation Dimensions
 
 [![Use it](https://img.shields.io/badge/Live%20Demo-Launch%20App-brightgreen?style=for-the-badge&logo=rocket)](https://justgoscha.github.io/engineer-evaluations/)
 [![Buy Me Coffee](https://img.shields.io/badge/Buy%20Me-Coffee-orange?style=for-the-badge&logo=buy-me-a-coffee)](https://coff.ee/justgoscha)
