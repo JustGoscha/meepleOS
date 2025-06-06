@@ -6,6 +6,9 @@ A beautiful web-based tool for evaluating technical engineers across 7 key dimen
 
 *Try it now! No installation required - runs directly in your browser.*
 
+<img width="1062" alt="image" src="https://github.com/user-attachments/assets/f98ebb77-aa02-4b5d-ae27-9cb32c94b648" />
+
+
 ---
 
 ## ✨ Features
