@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,265 +8,855 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
+    <!-- DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- Custom styles -->
-    <style type="text/tailwind">
-        @layer components {
-            .rating-slider {
-                @apply w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer;
+    <style>
+        .collapse {
+            overflow: visible;
+        }
+        .rating-card {
+            transition: all 0.3s ease;
+        }
+        .rating-card:hover {
+            transform: translateY(-2px);
+        }
+        .rating-labels {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .rating-label {
+            text-align: center;
+            font-size: 0.75rem;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            background: rgba(0,0,0,0.05);
+        }
+        .rating-label.active {
+            background: rgba(147, 51, 234, 0.2);
+            color: rgb(147, 51, 234);
+            font-weight: 600;
+        }
+        .level-card {
+            transition: all 0.3s ease;
+            opacity: 0.6;
+        }
+        .level-card.highlighted {
+            opacity: 1;
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .level-card.highlighted.junior-level {
+            border-color: rgb(34, 197, 94);
+            box-shadow: 0 8px 25px -5px rgba(34, 197, 94, 0.3);
+        }
+        .level-card.highlighted.mid-level {
+            border-color: rgb(59, 130, 246);
+            box-shadow: 0 8px 25px -5px rgba(59, 130, 246, 0.3);
+        }
+        .level-card.highlighted.senior-level {
+            border-color: rgb(147, 51, 234);
+            box-shadow: 0 8px 25px -5px rgba(147, 51, 234, 0.3);
+        }
+        
+        /* Level toggle button styling */
+        .level-toggle {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.8);
+            color: rgb(75, 85, 99);
+        }
+        
+        .level-toggle:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .junior-toggle {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(34, 197, 94, 0.05));
+            border-color: rgba(34, 197, 94, 0.2);
+        }
+        
+        .mid-toggle {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0.05));
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+        
+        .senior-toggle {
+            background: linear-gradient(135deg, rgba(147, 51, 234, 0.1), rgba(147, 51, 234, 0.05));
+            border-color: rgba(147, 51, 234, 0.2);
+        }
+        
+        /* Active states */
+        .junior-toggle.active {
+            background: linear-gradient(135deg, rgb(34, 197, 94), rgb(22, 163, 74));
+            color: white;
+            border-color: rgb(34, 197, 94);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+        
+        .mid-toggle.active {
+            background: linear-gradient(135deg, rgb(59, 130, 246), rgb(37, 99, 235));
+            color: white;
+            border-color: rgb(59, 130, 246);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+        
+        .senior-toggle.active {
+            background: linear-gradient(135deg, rgb(147, 51, 234), rgb(126, 34, 206));
+            color: white;
+            border-color: rgb(147, 51, 234);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
+        }
+        
+        /* SVG icon color changes for active states */
+        .level-toggle.active img {
+            filter: brightness(0) invert(1);
+        }
+        
+        /* Glowing selected number styles */
+        .selected-rating {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgb(147, 51, 234), rgb(126, 34, 206));
+            color: white;
+            font-weight: bold;
+            font-size: 0.875rem;
+            margin-right: 0.5rem;
+            box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+        }
+        
+        /* Color-coded rating indicators */
+        .selected-rating.rating-1 {
+            background: linear-gradient(135deg, rgb(239, 68, 68), rgb(220, 38, 38), rgb(185, 28, 28));
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .selected-rating.rating-1:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);
+        }
+        
+        .selected-rating.rating-2 {
+            background: linear-gradient(135deg, rgb(249, 115, 22), rgb(234, 88, 12), rgb(194, 65, 12));
+            box-shadow: 0 0 20px rgba(249, 115, 22, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .selected-rating.rating-2:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(249, 115, 22, 0.2);
+        }
+        
+        .selected-rating.rating-3 {
+            background: linear-gradient(135deg, rgb(34, 197, 94), rgb(22, 163, 74), rgb(21, 128, 61));
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .selected-rating.rating-3:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(34, 197, 94, 0.8);
+        }
+        
+        .selected-rating.rating-4 {
+            background: linear-gradient(135deg, rgb(59, 130, 246), rgb(37, 99, 235), rgb(29, 78, 216));
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
+            transition: all 0.3s ease;
+            animation: blueShimmer 3s infinite;
+        }
+        
+        .selected-rating.rating-4:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 35px rgba(59, 130, 246, 1);
+            animation: blueShimmerHover 1.5s infinite;
+        }
+        
+        .selected-rating.rating-5 {
+            background: linear-gradient(135deg, rgb(147, 51, 234), rgb(126, 34, 206), rgb(107, 33, 168));
+            box-shadow: 0 0 30px rgba(147, 51, 234, 0.8);
+            transition: all 0.3s ease;
+            animation: purpleSparkle 2s infinite;
+        }
+        
+        .selected-rating.rating-5:hover {
+            transform: scale(1.2);
+            box-shadow: 0 0 50px rgba(147, 51, 234, 1), 0 0 100px rgba(147, 51, 234, 0.5);
+            animation: purpleSparkleHover 1s infinite;
+        }
+        
+        /* Overall rating card color variations */
+        .overall-rating-card {
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+        
+        .overall-rating-card.rating-red {
+            background: linear-gradient(135deg, rgb(239, 68, 68), rgb(220, 38, 38), rgb(185, 28, 28)) !important;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+        }
+        
+        .overall-rating-card.rating-red:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(239, 68, 68, 0.6);
+        }
+        
+        .overall-rating-card.rating-orange {
+            background: linear-gradient(135deg, rgb(249, 115, 22), rgb(234, 88, 12), rgb(194, 65, 12)) !important;
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+        }
+        
+        .overall-rating-card.rating-orange:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(249, 115, 22, 0.6);
+        }
+        
+        .overall-rating-card.rating-green {
+            background: linear-gradient(135deg, rgb(34, 197, 94), rgb(22, 163, 74), rgb(21, 128, 61)) !important;
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+        }
+        
+        .overall-rating-card.rating-green:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(34, 197, 94, 0.6);
+        }
+        
+        .overall-rating-card.rating-blue {
+            background: linear-gradient(135deg, rgb(59, 130, 246), rgb(37, 99, 235), rgb(29, 78, 216)) !important;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            animation: cardBlueShimmer 4s infinite;
+        }
+        
+        .overall-rating-card.rating-blue:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 20px 50px rgba(59, 130, 246, 0.8);
+            animation: cardBlueShimmerHover 2s infinite;
+        }
+        
+        .overall-rating-card.rating-purple {
+            background: linear-gradient(135deg, rgb(147, 51, 234), rgb(126, 34, 206), rgb(107, 33, 168)) !important;
+            box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
+            animation: cardPurpleSparkle 3s infinite;
+        }
+        
+        .overall-rating-card.rating-purple:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 25px 60px rgba(147, 51, 234, 1), 0 0 100px rgba(147, 51, 234, 0.5);
+            animation: cardPurpleSparkleHover 1.5s infinite;
+        }
+        
+        /* Blue rating animations */
+        @keyframes blueShimmer {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(59, 130, 246, 0.6);
             }
-            .rating-slider::-webkit-slider-thumb {
-                @apply appearance-none w-4 h-4 rounded-full bg-purple-500 cursor-pointer;
+            33% {
+                box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
             }
-            .rating-slider::-moz-range-thumb {
-                @apply appearance-none w-4 h-4 rounded-full bg-purple-500 cursor-pointer;
+            66% {
+                box-shadow: 0 0 30px rgba(59, 130, 246, 0.7);
             }
-            .rating-value {
-                @apply text-sm text-gray-600 mt-1;
+        }
+        
+        @keyframes blueShimmerHover {
+            0%, 100% {
+                box-shadow: 0 0 35px rgba(59, 130, 246, 1);
             }
-            .overall-rating {
-                @apply text-2xl font-bold text-purple-800 mt-4;
+            50% {
+                box-shadow: 0 0 45px rgba(59, 130, 246, 1), 0 0 70px rgba(59, 130, 246, 0.5);
             }
-            .accordion-content {
-                @apply transition-all duration-300 ease-in-out;
+        }
+        
+        /* Purple rating animations */
+        @keyframes purpleSparkle {
+            0%, 100% {
+                box-shadow: 0 0 30px rgba(147, 51, 234, 0.8);
             }
-            .accordion-content.hidden {
-                @apply max-h-0 overflow-hidden opacity-0;
+            25% {
+                box-shadow: 0 0 35px rgba(147, 51, 234, 1), 0 0 60px rgba(147, 51, 234, 0.4);
             }
-            .accordion-content:not(.hidden) {
-                @apply max-h-[1000px] opacity-100;
+            50% {
+                box-shadow: 0 0 40px rgba(147, 51, 234, 1), 0 0 80px rgba(147, 51, 234, 0.6);
             }
+            75% {
+                box-shadow: 0 0 35px rgba(147, 51, 234, 0.9), 0 0 70px rgba(147, 51, 234, 0.5);
+            }
+        }
+        
+        @keyframes purpleSparkleHover {
+            0%, 100% {
+                box-shadow: 0 0 50px rgba(147, 51, 234, 1), 0 0 100px rgba(147, 51, 234, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 60px rgba(147, 51, 234, 1), 0 0 120px rgba(147, 51, 234, 0.7), 0 0 150px rgba(147, 51, 234, 0.3);
+            }
+        }
+        
+        /* Card-level animations */
+        @keyframes cardBlueShimmer {
+            0%, 100% {
+                box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+            }
+            33% {
+                box-shadow: 0 8px 30px rgba(59, 130, 246, 0.5);
+            }
+            66% {
+                box-shadow: 0 8px 35px rgba(59, 130, 246, 0.6);
+            }
+        }
+        
+        @keyframes cardBlueShimmerHover {
+            0%, 100% {
+                box-shadow: 0 20px 50px rgba(59, 130, 246, 0.8);
+            }
+            50% {
+                box-shadow: 0 25px 60px rgba(59, 130, 246, 1), 0 0 80px rgba(59, 130, 246, 0.4);
+            }
+        }
+        
+        @keyframes cardPurpleSparkle {
+            0%, 100% {
+                box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
+            }
+            25% {
+                box-shadow: 0 8px 30px rgba(147, 51, 234, 0.6), 0 0 40px rgba(147, 51, 234, 0.3);
+            }
+            50% {
+                box-shadow: 0 8px 35px rgba(147, 51, 234, 0.8), 0 0 60px rgba(147, 51, 234, 0.4);
+            }
+            75% {
+                box-shadow: 0 8px 30px rgba(147, 51, 234, 0.7), 0 0 50px rgba(147, 51, 234, 0.3);
+            }
+        }
+        
+        @keyframes cardPurpleSparkleHover {
+            0%, 100% {
+                box-shadow: 0 25px 60px rgba(147, 51, 234, 1), 0 0 100px rgba(147, 51, 234, 0.5);
+            }
+            50% {
+                box-shadow: 0 30px 70px rgba(147, 51, 234, 1), 0 0 120px rgba(147, 51, 234, 0.7), 0 0 150px rgba(147, 51, 234, 0.4);
+            }
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(147, 51, 234, 0.8);
+            }
+        }
+        
+        /* Typeform-style engineer name input */
+        .typeform-input {
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid #e5e7eb;
+            border-radius: 0;
+            font-size: 2rem;
+            font-weight: 700;
+            padding: 0.5rem 0;
+            transition: all 0.3s ease;
+            color: #1f2937;
+        }
+        
+        .typeform-input:focus {
+            outline: none;
+            border-bottom-color: rgb(147, 51, 234);
+            box-shadow: 0 3px 0 0 rgba(147, 51, 234, 0.1);
+        }
+        
+        .typeform-input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8 text-purple-800">Tech Dimensions</h1>
+<body class="bg-gradient-to-br from-purple-50 to-blue-50 min-h-screen">
+    <div class="container mx-auto px-3 py-4">
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
+                🎯 Tech Dimensions
+            </h1>
+            <p class="text-base text-gray-600">Evaluate technical engineers across 7 key dimensions</p>
+        </div>
+
+        <!-- Engineer Info Card -->
+        <div class="card bg-base-100 shadow-lg mb-4">
+            <div class="card-body p-4">
+                <h2 class="card-title text-lg mb-3">👤 Engineer Information</h2>
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="form-control">
+                        <input type="text" id="engineerName" placeholder="Enter the engineer's name..."  class="typeform-input w-full" />
+                    </div>
+                    <div class="form-control">
+                        <label class="label py-1">
+                            <span class="label-text font-medium">Evaluation Level</span>
+                        </label>
+                        <div class="join w-full" id="levelButtonGroup">
+                            <button type="button" class="join-item btn flex-1 level-toggle junior-toggle" data-level="junior">
+                                <img src="img/junior.svg" alt="Junior" class="w-5 h-5 mr-2">
+                                <span class="font-semibold">Junior</span>
+                            </button>
+                            <button type="button" class="join-item btn flex-1 level-toggle mid-toggle" data-level="mid">
+                                <img src="img/mid.svg" alt="Mid-Level" class="w-5 h-5 mr-2">
+                                <span class="font-semibold">Mid-Level</span>
+                            </button>
+                            <button type="button" class="join-item btn flex-1 level-toggle senior-toggle" data-level="senior">
+                                <img src="img/senior.svg" alt="Senior" class="w-5 h-5 mr-2">
+                                <span class="font-semibold">Senior</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         
-        <div class="grid md:grid-cols-2 gap-8">
+        <div class="grid lg:grid-cols-2 gap-4">
             <!-- Ratings Section -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <h2 class="text-2xl font-semibold mb-6">Engineer Rating</h2>
-                
-                <div class="space-y-6">
-                    <!-- Technical Execution -->
-                    <div class="rating-group bg-white rounded-lg shadow p-4">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion('technicalExecution')">
-                            <label class="text-lg font-medium">Technical Execution</label>
-                            <span class="text-gray-500">▼</span>
-                        </div>
-                        <div id="technicalExecution" class="accordion-content hidden">
-                            <div class="space-y-4">
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Junior</h4>
-                                    <p class="text-sm text-gray-600">Needs code review to catch issues. Focuses on local scope. May struggle with test coverage or performance awareness.</p>
+            <div class="space-y-3">
+                <!-- Technical Execution -->
+                <div class="card bg-base-100 shadow-lg rating-card">
+                    <div class="card-body p-3">
+                        <div class="collapse collapse-arrow">
+                            <input type="checkbox" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-2 py-2">
+                                <span class="selected-rating" data-dimension="technicalExecution" style="display: none;">0</span>
+                                <span class="text-xl">⚙️</span>
+                                <span>Technical Execution</span>
+                            </div>
+                            <div class="collapse-content">
+                                <div class="grid grid-cols-1 gap-3 mb-4">
+                                    <div class="level-card junior-level card bg-green-50 border border-green-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/junior.svg" alt="Junior" class="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-green-800 mb-1">Junior Engineer</h4>
+                                                <p class="text-sm text-green-700">Needs code review to catch issues. Focuses on local scope.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card mid-level card bg-blue-50 border border-blue-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/mid.svg" alt="Mid-Level" class="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-blue-800 mb-1">Mid-Level Engineer</h4>
+                                                <p class="text-sm text-blue-700">Writes clean, efficient code with few bugs. Thinks about edge cases.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card senior-level card bg-purple-50 border border-purple-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/senior.svg" alt="Senior" class="w-6 h-6 text-purple-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-purple-800 mb-1">Senior Engineer</h4>
+                                                <p class="text-sm text-purple-700">Writes resilient, extensible code. Refactors systems proactively.</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Mid-Level</h4>
-                                    <p class="text-sm text-gray-600">Writes clean, efficient code with few bugs. Begins thinking about edge cases, testing, and maintainability.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Senior</h4>
-                                    <p class="text-sm text-gray-600">Writes resilient, extensible code. Refactors systems. Proactively fixes tech debt and improves team standards.</p>
+                                <div class="form-control">
+                                    <input type="range" min="1" max="5" step="1" value="1" 
+                                           class="range range-primary" data-dimension="technicalExecution" />
+                                    <div class="rating-labels">
+                                        <div class="rating-label" data-value="1">1<br>😰<br>Below Expectations</div>
+                                        <div class="rating-label" data-value="2">2<br>😐<br>Slightly Below</div>
+                                        <div class="rating-label" data-value="3">3<br>😊<br>Meets Expectations</div>
+                                        <div class="rating-label" data-value="4">4<br>🌟<br>Often Exceeds</div>
+                                        <div class="rating-label" data-value="5">5<br>🚀<br>Greatly Exceeds</div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="mt-4">
-                                <input type="range" min="0" max="10" step="1" value="0" class="rating-slider" data-dimension="technicalExecution">
-                                <div class="rating-value">0.0</div>
-                            </div>
                         </div>
-                    </div>
-
-                    <!-- System Design -->
-                    <div class="rating-group bg-white rounded-lg shadow p-4">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion('systemDesign')">
-                            <label class="text-lg font-medium">System Design</label>
-                            <span class="text-gray-500">▼</span>
-                        </div>
-                        <div id="systemDesign" class="accordion-content hidden">
-                            <div class="space-y-4">
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Junior</h4>
-                                    <p class="text-sm text-gray-600">Can follow a design and build components. May struggle with abstractions or overcomplicate.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Mid-Level</h4>
-                                    <p class="text-sm text-gray-600">Designs new features within an existing system. Understands scalability and trade-offs.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Senior</h4>
-                                    <p class="text-sm text-gray-600">Designs systems from scratch. Balances long-term needs, mentors others in design. Makes pragmatic trade-offs.</p>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <input type="range" min="0" max="10" step="1" value="0" class="rating-slider" data-dimension="systemDesign">
-                                <div class="rating-value">0.0</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Collaboration -->
-                    <div class="rating-group bg-white rounded-lg shadow p-4">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion('collaboration')">
-                            <label class="text-lg font-medium">Collaboration</label>
-                            <span class="text-gray-500">▼</span>
-                        </div>
-                        <div id="collaboration" class="accordion-content hidden">
-                            <div class="space-y-4">
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Junior</h4>
-                                    <p class="text-sm text-gray-600">Communicates basic blockers, asks for help. Needs nudging to participate in reviews or planning.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Mid-Level</h4>
-                                    <p class="text-sm text-gray-600">Gives thoughtful code reviews. Communicates clearly with designers, PMs, and other engineers.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Senior</h4>
-                                    <p class="text-sm text-gray-600">Builds consensus, defuses conflict, improves team dynamics. Influences cross-team decisions.</p>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <input type="range" min="0" max="10" step="1" value="0" class="rating-slider" data-dimension="collaboration">
-                                <div class="rating-value">0.0</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Ownership & Accountability -->
-                    <div class="rating-group bg-white rounded-lg shadow p-4">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion('ownershipAccountability')">
-                            <label class="text-lg font-medium">Ownership & Accountability</label>
-                            <span class="text-gray-500">▼</span>
-                        </div>
-                        <div id="ownershipAccountability" class="accordion-content hidden">
-                            <div class="space-y-4">
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Junior</h4>
-                                    <p class="text-sm text-gray-600">Owns small tasks. May need reminders to test or follow up. Relies on guidance.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Mid-Level</h4>
-                                    <p class="text-sm text-gray-600">Owns features end-to-end. Takes responsibility for timelines and quality. Follows through independently.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Senior</h4>
-                                    <p class="text-sm text-gray-600">Owns complex systems or cross-team initiatives. Makes hard calls, handles ambiguity and failure gracefully.</p>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <input type="range" min="0" max="10" step="1" value="0" class="rating-slider" data-dimension="ownershipAccountability">
-                                <div class="rating-value">0.0</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Product & Business Understanding -->
-                    <div class="rating-group bg-white rounded-lg shadow p-4">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion('productBusinessUnderstanding')">
-                            <label class="text-lg font-medium">Product & Business Understanding</label>
-                            <span class="text-gray-500">▼</span>
-                        </div>
-                        <div id="productBusinessUnderstanding" class="accordion-content hidden">
-                            <div class="space-y-4">
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Junior</h4>
-                                    <p class="text-sm text-gray-600">Focuses on building what's asked. Limited product context.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Mid-Level</h4>
-                                    <p class="text-sm text-gray-600">Understands user needs. Flags unnecessary complexity. Suggests small UX improvements.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Senior</h4>
-                                    <p class="text-sm text-gray-600">Anticipates product risks. Guides scope. Balances technical and business goals. Challenges specs when needed.</p>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <input type="range" min="0" max="10" step="1" value="0" class="rating-slider" data-dimension="productBusinessUnderstanding">
-                                <div class="rating-value">0.0</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Growth + Mentorship -->
-                    <div class="rating-group bg-white rounded-lg shadow p-4">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion('growthMentorship')">
-                            <label class="text-lg font-medium">Growth + Mentorship</label>
-                            <span class="text-gray-500">▼</span>
-                        </div>
-                        <div id="growthMentorship" class="accordion-content hidden">
-                            <div class="space-y-4">
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Junior</h4>
-                                    <p class="text-sm text-gray-600">Learns from others, receives feedback well. May need help recognizing learning opportunities.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Mid-Level</h4>
-                                    <p class="text-sm text-gray-600">Shares knowledge. Mentors juniors informally. Reflects on personal growth areas.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Senior</h4>
-                                    <p class="text-sm text-gray-600">Coaches others consistently. Creates learning opportunities. Grows team capacity intentionally.</p>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <input type="range" min="0" max="10" step="1" value="0" class="rating-slider" data-dimension="growthMentorship">
-                                <div class="rating-value">0.0</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Impact -->
-                    <div class="rating-group bg-white rounded-lg shadow p-4">
-                        <div class="flex justify-between items-center cursor-pointer" onclick="toggleAccordion('impact')">
-                            <label class="text-lg font-medium">Impact</label>
-                            <span class="text-gray-500">▼</span>
-                        </div>
-                        <div id="impact" class="accordion-content hidden">
-                            <div class="space-y-4">
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Junior</h4>
-                                    <p class="text-sm text-gray-600">Completes defined tasks reliably. Limited wider impact.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Mid-Level</h4>
-                                    <p class="text-sm text-gray-600">Unblocks teammates. Improves performance, quality, or process for the team.</p>
-                                </div>
-                                <div class="p-3 bg-gray-50 rounded">
-                                    <h4 class="font-medium text-purple-600">Senior</h4>
-                                    <p class="text-sm text-gray-600">Multiplies team output. Influences roadmaps, process, and strategy. Builds tools or practices others adopt.</p>
-                                </div>
-                            </div>
-                            <div class="mt-4">
-                                <input type="range" min="0" max="10" step="1" value="0" class="rating-slider" data-dimension="impact">
-                                <div class="rating-value">0.0</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Overall Rating -->
-                    <div class="overall-rating">
-                        <div>Average Rating: <span id="overallRating">0.0</span></div>
-                        <div>Total Score: <span id="totalScore">0.0</span></div>
                     </div>
                 </div>
 
-                <div class="mt-8 flex gap-4">
-                    <button id="resetBtn" class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300 transition-colors">
-                        Reset
+                <!-- System Design -->
+                <div class="card bg-base-100 shadow-lg rating-card">
+                    <div class="card-body p-3">
+                        <div class="collapse collapse-arrow">
+                            <input type="checkbox" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-2 py-2">
+                                <span class="selected-rating" data-dimension="systemDesign" style="display: none;">0</span>
+                                <span class="text-xl">🏗️</span>
+                                <span>System Design</span>
+                            </div>
+                            <div class="collapse-content">
+                                <div class="grid grid-cols-1 gap-3 mb-4">
+                                    <div class="level-card junior-level card bg-green-50 border border-green-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/junior.svg" alt="Junior" class="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-green-800 mb-1">Junior Engineer</h4>
+                                                <p class="text-sm text-green-700">Can follow a design and build components.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card mid-level card bg-blue-50 border border-blue-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/mid.svg" alt="Mid-Level" class="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-blue-800 mb-1">Mid-Level Engineer</h4>
+                                                <p class="text-sm text-blue-700">Designs new features within existing systems. Understands trade-offs.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card senior-level card bg-purple-50 border border-purple-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/senior.svg" alt="Senior" class="w-6 h-6 text-purple-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-purple-800 mb-1">Senior Engineer</h4>
+                                                <p class="text-sm text-purple-700">Designs systems from scratch. Balances long-term needs.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-control">
+                                    <input type="range" min="1" max="5" step="1" value="1" 
+                                           class="range range-primary" data-dimension="systemDesign" />
+                                    <div class="rating-labels">
+                                        <div class="rating-label" data-value="1">1<br>😰<br>Below Expectations</div>
+                                        <div class="rating-label" data-value="2">2<br>😐<br>Slightly Below</div>
+                                        <div class="rating-label" data-value="3">3<br>😊<br>Meets Expectations</div>
+                                        <div class="rating-label" data-value="4">4<br>🌟<br>Often Exceeds</div>
+                                        <div class="rating-label" data-value="5">5<br>🚀<br>Greatly Exceeds</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Collaboration -->
+                <div class="card bg-base-100 shadow-lg rating-card">
+                    <div class="card-body p-3">
+                        <div class="collapse collapse-arrow">
+                            <input type="checkbox" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-2 py-2">
+                                <span class="selected-rating" data-dimension="collaboration" style="display: none;">0</span>
+                                <span class="text-xl">🤝</span>
+                                <span>Collaboration</span>
+                            </div>
+                            <div class="collapse-content">
+                                <div class="grid grid-cols-1 gap-3 mb-4">
+                                    <div class="level-card junior-level card bg-green-50 border border-green-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/junior.svg" alt="Junior" class="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-green-800 mb-1">Junior Engineer</h4>
+                                                <p class="text-sm text-green-700">Communicates basic blockers, asks for help.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card mid-level card bg-blue-50 border border-blue-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/mid.svg" alt="Mid-Level" class="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-blue-800 mb-1">Mid-Level Engineer</h4>
+                                                <p class="text-sm text-blue-700">Gives thoughtful code reviews. Communicates clearly.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card senior-level card bg-purple-50 border border-purple-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/senior.svg" alt="Senior" class="w-6 h-6 text-purple-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-purple-800 mb-1">Senior Engineer</h4>
+                                                <p class="text-sm text-purple-700">Builds consensus, defuses conflict, improves team dynamics.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-control">
+                                    <input type="range" min="1" max="5" step="1" value="1" 
+                                           class="range range-primary" data-dimension="collaboration" />
+                                    <div class="rating-labels">
+                                        <div class="rating-label" data-value="1">1<br>😰<br>Below Expectations</div>
+                                        <div class="rating-label" data-value="2">2<br>😐<br>Slightly Below</div>
+                                        <div class="rating-label" data-value="3">3<br>😊<br>Meets Expectations</div>
+                                        <div class="rating-label" data-value="4">4<br>🌟<br>Often Exceeds</div>
+                                        <div class="rating-label" data-value="5">5<br>🚀<br>Greatly Exceeds</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ownership & Accountability -->
+                <div class="card bg-base-100 shadow-lg rating-card">
+                    <div class="card-body p-3">
+                        <div class="collapse collapse-arrow">
+                            <input type="checkbox" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-2 py-2">
+                                <span class="selected-rating" data-dimension="ownershipAccountability" style="display: none;">0</span>
+                                <span class="text-xl">🎯</span>
+                                <span>Ownership & Accountability</span>
+                            </div>
+                            <div class="collapse-content">
+                                <div class="grid grid-cols-1 gap-3 mb-4">
+                                    <div class="level-card junior-level card bg-green-50 border border-green-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/junior.svg" alt="Junior" class="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-green-800 mb-1">Junior Engineer</h4>
+                                                <p class="text-sm text-green-700">Owns small tasks. May need reminders to follow up.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card mid-level card bg-blue-50 border border-blue-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/mid.svg" alt="Mid-Level" class="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-blue-800 mb-1">Mid-Level Engineer</h4>
+                                                <p class="text-sm text-blue-700">Owns features end-to-end. Takes responsibility for quality.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card senior-level card bg-purple-50 border border-purple-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/senior.svg" alt="Senior" class="w-6 h-6 text-purple-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-purple-800 mb-1">Senior Engineer</h4>
+                                                <p class="text-sm text-purple-700">Owns complex systems. Makes hard calls, handles ambiguity.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-control">
+                                    <input type="range" min="1" max="5" step="1" value="1" 
+                                           class="range range-primary" data-dimension="ownershipAccountability" />
+                                    <div class="rating-labels">
+                                        <div class="rating-label" data-value="1">1<br>😰<br>Below Expectations</div>
+                                        <div class="rating-label" data-value="2">2<br>😐<br>Slightly Below</div>
+                                        <div class="rating-label" data-value="3">3<br>😊<br>Meets Expectations</div>
+                                        <div class="rating-label" data-value="4">4<br>🌟<br>Often Exceeds</div>
+                                        <div class="rating-label" data-value="5">5<br>🚀<br>Greatly Exceeds</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product & Business Understanding -->
+                <div class="card bg-base-100 shadow-lg rating-card">
+                    <div class="card-body p-3">
+                        <div class="collapse collapse-arrow">
+                            <input type="checkbox" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-2 py-2">
+                                <span class="selected-rating" data-dimension="productBusinessUnderstanding" style="display: none;">0</span>
+                                <span class="text-xl">💼</span>
+                                <span>Product & Business Understanding</span>
+                            </div>
+                            <div class="collapse-content">
+                                <div class="grid grid-cols-1 gap-3 mb-4">
+                                    <div class="level-card junior-level card bg-green-50 border border-green-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/junior.svg" alt="Junior" class="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-green-800 mb-1">Junior Engineer</h4>
+                                                <p class="text-sm text-green-700">Focuses on building what's asked. Limited product context.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card mid-level card bg-blue-50 border border-blue-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/mid.svg" alt="Mid-Level" class="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-blue-800 mb-1">Mid-Level Engineer</h4>
+                                                <p class="text-sm text-blue-700">Understands user needs. Suggests small UX improvements.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card senior-level card bg-purple-50 border border-purple-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/senior.svg" alt="Senior" class="w-6 h-6 text-purple-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-purple-800 mb-1">Senior Engineer</h4>
+                                                <p class="text-sm text-purple-700">Anticipates product risks. Balances technical and business goals.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-control">
+                                    <input type="range" min="1" max="5" step="1" value="1" 
+                                           class="range range-primary" data-dimension="productBusinessUnderstanding" />
+                                    <div class="rating-labels">
+                                        <div class="rating-label" data-value="1">1<br>😰<br>Below Expectations</div>
+                                        <div class="rating-label" data-value="2">2<br>😐<br>Slightly Below</div>
+                                        <div class="rating-label" data-value="3">3<br>😊<br>Meets Expectations</div>
+                                        <div class="rating-label" data-value="4">4<br>🌟<br>Often Exceeds</div>
+                                        <div class="rating-label" data-value="5">5<br>🚀<br>Greatly Exceeds</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Growth + Mentorship -->
+                <div class="card bg-base-100 shadow-lg rating-card">
+                    <div class="card-body p-3">
+                        <div class="collapse collapse-arrow">
+                            <input type="checkbox" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-2 py-2">
+                                <span class="selected-rating" data-dimension="growthMentorship" style="display: none;">0</span>
+                                <span class="text-xl">🌱</span>
+                                <span>Growth + Mentorship</span>
+                            </div>
+                            <div class="collapse-content">
+                                <div class="grid grid-cols-1 gap-3 mb-4">
+                                    <div class="level-card junior-level card bg-green-50 border border-green-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/junior.svg" alt="Junior" class="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-green-800 mb-1">Junior Engineer</h4>
+                                                <p class="text-sm text-green-700">Learns from others, receives feedback well.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card mid-level card bg-blue-50 border border-blue-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/mid.svg" alt="Mid-Level" class="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-blue-800 mb-1">Mid-Level Engineer</h4>
+                                                <p class="text-sm text-blue-700">Shares knowledge. Mentors juniors informally.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card senior-level card bg-purple-50 border border-purple-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/senior.svg" alt="Senior" class="w-6 h-6 text-purple-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-purple-800 mb-1">Senior Engineer</h4>
+                                                <p class="text-sm text-purple-700">Coaches others consistently. Creates learning opportunities.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-control">
+                                    <input type="range" min="1" max="5" step="1" value="1" 
+                                           class="range range-primary" data-dimension="growthMentorship" />
+                                    <div class="rating-labels">
+                                        <div class="rating-label" data-value="1">1<br>😰<br>Below Expectations</div>
+                                        <div class="rating-label" data-value="2">2<br>😐<br>Slightly Below</div>
+                                        <div class="rating-label" data-value="3">3<br>😊<br>Meets Expectations</div>
+                                        <div class="rating-label" data-value="4">4<br>🌟<br>Often Exceeds</div>
+                                        <div class="rating-label" data-value="5">5<br>🚀<br>Greatly Exceeds</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Impact -->
+                <div class="card bg-base-100 shadow-lg rating-card">
+                    <div class="card-body p-3">
+                        <div class="collapse collapse-arrow">
+                            <input type="checkbox" class="peer" />
+                            <div class="collapse-title text-lg font-medium flex items-center gap-2 py-2">
+                                <span class="selected-rating" data-dimension="impact" style="display: none;">0</span>
+                                <span class="text-xl">💥</span>
+                                <span>Impact</span>
+                            </div>
+                            <div class="collapse-content">
+                                <div class="grid grid-cols-1 gap-3 mb-4">
+                                    <div class="level-card junior-level card bg-green-50 border border-green-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/junior.svg" alt="Junior" class="w-6 h-6 text-green-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-green-800 mb-1">Junior Engineer</h4>
+                                                <p class="text-sm text-green-700">Completes defined tasks reliably. Limited wider impact.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card mid-level card bg-blue-50 border border-blue-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/mid.svg" alt="Mid-Level" class="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-blue-800 mb-1">Mid-Level Engineer</h4>
+                                                <p class="text-sm text-blue-700">Unblocks teammates. Improves team performance or process.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="level-card senior-level card bg-purple-50 border border-purple-200 p-3">
+                                        <div class="flex items-start gap-3">
+                                            <img src="img/senior.svg" alt="Senior" class="w-6 h-6 text-purple-600 mt-0.5 flex-shrink-0">
+                                            <div>
+                                                <h4 class="font-semibold text-purple-800 mb-1">Senior Engineer</h4>
+                                                <p class="text-sm text-purple-700">Multiplies team output. Influences roadmaps and strategy.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-control">
+                                    <input type="range" min="1" max="5" step="1" value="1" 
+                                           class="range range-primary" data-dimension="impact" />
+                                    <div class="rating-labels">
+                                        <div class="rating-label" data-value="1">1<br>😰<br>Below Expectations</div>
+                                        <div class="rating-label" data-value="2">2<br>😐<br>Slightly Below</div>
+                                        <div class="rating-label" data-value="3">3<br>😊<br>Meets Expectations</div>
+                                        <div class="rating-label" data-value="4">4<br>🌟<br>Often Exceeds</div>
+                                        <div class="rating-label" data-value="5">5<br>🚀<br>Greatly Exceeds</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overall Rating Card -->
+                <div class="card bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg overall-rating-card">
+                    <div class="card-body text-center p-4">
+                        <h3 class="card-title text-lg justify-center mb-3">📊 Overall Rating</h3>
+                        <div class="stats stats-vertical lg:stats-horizontal bg-white/20 backdrop-blur">
+                            <div class="stat py-2">
+                                <div class="stat-title text-white/80 text-sm">Average Rating</div>
+                                <div class="stat-value text-white text-2xl" id="overallRating">0.0</div>
+                            </div>
+                            <div class="stat py-2">
+                                <div class="stat-title text-white/80 text-sm">Total Score</div>
+                                <div class="stat-value text-white text-2xl" id="totalScore">0.0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-3 justify-center">
+                    <button id="resetBtn" class="btn btn-outline">
+                        🔄 Reset All
                     </button>
-                    <button id="exportBtn" class="px-4 py-2 bg-purple-500 text-white rounded hover:bg-purple-600 transition-colors">
-                        Export Chart
+                    <button id="exportBtn" class="btn btn-primary">
+                        🎯 Export Trading Card
                     </button>
                 </div>
             </div>
 
             <!-- Chart Section -->
-            <div class="bg-white rounded-lg shadow-lg p-6">
-                <canvas id="radarChart"></canvas>
+            <div class="card bg-base-100 shadow-lg sticky top-4">
+                <div class="card-body p-4">
+                    <h3 class="card-title text-lg mb-3 justify-center">📈 Radar Chart</h3>
+                    <div class="flex justify-center">
+                        <canvas id="radarChart" width="350" height="350"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
