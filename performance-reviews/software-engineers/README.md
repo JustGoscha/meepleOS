@@ -3,7 +3,8 @@
 [![Use it](https://img.shields.io/badge/Live%20Demo-Launch%20App-brightgreen?style=for-the-badge&logo=rocket)](https://justgoscha.github.io/engineer-evaluations/)
 [![Buy Me Coffee](https://img.shields.io/badge/Buy%20Me-Coffee-orange?style=for-the-badge&logo=buy-me-a-coffee)](https://coff.ee/justgoscha)
 
-A beautiful web-based tool for evaluating technical engineers across 7 key dimensions. Visualize engineering competencies using an interactive spider/radar chart with a modern, striking design.
+Not every engineer is the same. Evaluate the strengths and weaknesses of your engineers. 
+Give them appreciation and feedback where its appropriate. Build a kick ass team!
 
 ## 🚀 **[Launch Tech Dimensions →](https://justgoscha.github.io/engineer-evaluations/)**
 
