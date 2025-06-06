@@ -1,13 +1,7 @@
 # Tech Dimensions
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Launch%20App-brightgreen?style=for-the-badge&logo=rocket)](https://justgoscha.github.io/engineer-evaluations/)
-[![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red?style=for-the-badge)](https://github.com/justgoscha)
+[![Use it](https://img.shields.io/badge/Live%20Demo-Launch%20App-brightgreen?style=for-the-badge&logo=rocket)](https://justgoscha.github.io/engineer-evaluations/)
 [![Buy Me Coffee](https://img.shields.io/badge/Buy%20Me-Coffee-orange?style=for-the-badge&logo=buy-me-a-coffee)](https://coff.ee/justgoscha)
-[![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-yellow?style=for-the-badge&logo=javascript)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-blue?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
-[![Chart.js](https://img.shields.io/badge/Chart.js-Visualization-ff6384?style=for-the-badge&logo=chart.js)](https://www.chartjs.org/)
-[![No Build](https://img.shields.io/badge/No%20Build-Required-green?style=for-the-badge&logo=html5)](https://developer.mozilla.org/en-US/docs/Web/HTML)
-[![Mobile Friendly](https://img.shields.io/badge/Mobile-Friendly-purple?style=for-the-badge&logo=mobile)](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_media_queries)
 
 A beautiful web-based tool for evaluating technical engineers across 7 key dimensions. Visualize engineering competencies using an interactive spider/radar chart with a modern, striking design.
 
