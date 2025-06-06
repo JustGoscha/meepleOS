@@ -25,6 +25,9 @@ let ratingsSet = {
     impact: false
 };
 
+// Flag to prevent event listeners from firing during initialization
+let isInitializing = false;
+
 // Load saved data from localStorage
 const savedRatings = localStorage.getItem('techDimensionsRatings');
 const savedInfo = localStorage.getItem('techDimensionsInfo');
@@ -179,6 +182,9 @@ document.querySelectorAll('.level-toggle').forEach(button => {
 // Handle slider changes
 document.querySelectorAll('.range').forEach(slider => {
     slider.addEventListener('input', () => {
+        // Skip if we're initializing from localStorage
+        if (isInitializing) return;
+        
         const dimension = slider.dataset.dimension;
         const value = parseInt(slider.value);
         
@@ -222,15 +228,44 @@ function updateRatingLabels(slider, value) {
 
 // Update UI to reflect current ratings
 function updateUI() {
+    isInitializing = true;
+    
     for (const [dimension, value] of Object.entries(ratings)) {
-        const slider = document.querySelector(`[data-dimension="${dimension}"]`);
+        const slider = document.querySelector(`input[data-dimension="${dimension}"]`);
+        
         if (slider) {
+            // Set the value using both property and attribute
             slider.value = value;
-            updateRatingLabels(slider, value);
+            slider.setAttribute('value', value);
+            
+            // Force DaisyUI range component to update visually
+            // Method 1: Dispatch events
+            const inputEvent = new Event('input', { bubbles: true });
+            slider.dispatchEvent(inputEvent);
+            
+            // Method 2: Force CSS recalculation by updating the background gradient
+            const percentage = ((value - slider.min) / (slider.max - slider.min)) * 100;
+            slider.style.background = `linear-gradient(to right, hsl(var(--p)) 0%, hsl(var(--p)) ${percentage}%, hsl(var(--b3)) ${percentage}%, hsl(var(--b3)) 100%)`;
+            
+            // Method 3: Force a reflow
+            slider.offsetHeight;
+            
+            // Only update rating labels if this rating has been actually set by the user
+            if (ratingsSet[dimension]) {
+                updateRatingLabels(slider, value);
+            } else {
+                // Clear any active labels for unset ratings
+                const labelsContainer = slider.nextElementSibling;
+                const labels = labelsContainer.querySelectorAll('.rating-label');
+                labels.forEach(label => label.classList.remove('active'));
+            }
         }
     }
+    
     updateSelectedRatingIndicators();
     updateOverallRating();
+    
+    isInitializing = false;
 }
 
 // Update info UI
@@ -673,8 +708,11 @@ function createTradingCardExport() {
 
 // Initialize UI on page load
 document.addEventListener('DOMContentLoaded', () => {
-    updateUI();
-    updateInfoUI();
+    // Use setTimeout to ensure all DOM elements are fully rendered
+    setTimeout(() => {
+        updateUI();
+        updateInfoUI();
+    }, 100);
 });
 
 // Add click handlers for rating labels (alternative way to set ratings)
