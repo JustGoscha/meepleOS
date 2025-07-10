@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer Evaluation</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gradient-to-br from-pink-50 to-purple-50 min-h-screen">
+    <div id="evaluation-container"></div>
+
+    <!-- Include the reusable evaluation library -->
+    <script src="../evaluation.js"></script>
+    
+    <!-- Include the designer configuration -->
+    <script src="../configs/designer.js"></script>
+    
+    <script>
+        // Initialize the evaluation system
+        const evaluation = new EvaluationSystem(designerConfig);
+        evaluation.init('evaluation-container');
+    </script>
+</body>
+</html> 

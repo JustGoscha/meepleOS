@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meeple OS</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
+                🎯 Meeple OS
+            </h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Comprehensive evaluation systems for different roles in your organization. 
+                Each evaluation is tailored to the specific skills and expectations of the role.
+            </p>
+        </div>
+
+        <!-- Role Cards -->
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <!-- Software Engineers -->
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="text-6xl mb-4">⚙️</div>
+                        <h2 class="card-title text-2xl justify-center">Software Engineers</h2>
+                    </div>
+                    <p class="text-gray-600 text-center mb-6">
+                        Evaluate technical execution, system design, collaboration, and impact across junior to senior levels.
+                    </p>
+                    <div class="text-sm text-gray-500 mb-4">
+                        <strong>Dimensions:</strong> Technical Execution, System Design, Collaboration, Ownership, Product Understanding, Growth, Impact
+                    </div>
+                    <div class="card-actions justify-center">
+                        <a href="software-engineers-new/" class="btn btn-primary">
+                            🚀 Evaluate Engineer
+                        </a>
+                        <a href="software-engineers/" class="btn btn-ghost btn-sm">
+                            📚 View Original
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Managers -->
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="text-6xl mb-4">🎯</div>
+                        <h2 class="card-title text-2xl justify-center">Product Managers</h2>
+                    </div>
+                    <p class="text-gray-600 text-center mb-6">
+                        Assess product strategy, user research, data analysis, and stakeholder management capabilities.
+                    </p>
+                    <div class="text-sm text-gray-500 mb-4">
+                        <strong>Dimensions:</strong> Strategy, User Research, Data Analysis, Stakeholder Management, Technical Collaboration, Execution, Business Acumen
+                    </div>
+                    <div class="card-actions justify-center">
+                        <a href="product/" class="btn btn-secondary">
+                            📊 Evaluate PM
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Designers -->
+            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
+                <div class="card-body">
+                    <div class="text-center mb-4">
+                        <div class="text-6xl mb-4">🎨</div>
+                        <h2 class="card-title text-2xl justify-center">UX/UI Designers</h2>
+                    </div>
+                    <p class="text-gray-600 text-center mb-6">
+                        Review visual design skills, user experience thinking, research abilities, and business impact.
+                    </p>
+                    <div class="text-sm text-gray-500 mb-4">
+                        <strong>Dimensions:</strong> Visual Design, User Experience, Research, Prototyping, Collaboration, Design Systems, Business Impact
+                    </div>
+                    <div class="card-actions justify-center">
+                        <a href="design/" class="btn btn-accent">
+                            🎨 Evaluate Designer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="mt-16">
+            <h2 class="text-3xl font-bold text-center mb-8">✨ Features</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
+                <div class="text-center p-6">
+                    <div class="text-4xl mb-3">📊</div>
+                    <h3 class="font-semibold mb-2">Interactive Charts</h3>
+                    <p class="text-sm text-gray-600">Real-time radar charts that visualize performance across all dimensions</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-4xl mb-3">🎯</div>
+                    <h3 class="font-semibold mb-2">Level-Specific Guidance</h3>
+                    <p class="text-sm text-gray-600">Detailed expectations for each skill level from junior to senior</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-4xl mb-3">💾</div>
+                    <h3 class="font-semibold mb-2">Auto-Save</h3>
+                    <p class="text-sm text-gray-600">Your evaluations are automatically saved locally as you work</p>
+                </div>
+                <div class="text-center p-6">
+                    <div class="text-4xl mb-3">📤</div>
+                    <h3 class="font-semibold mb-2">Export Results</h3>
+                    <p class="text-sm text-gray-600">Download comprehensive evaluation reports in JSON format</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="mt-16 bg-base-200 rounded-lg p-8">
+            <h2 class="text-3xl font-bold text-center mb-8">🚀 How It Works</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="text-5xl mb-4">1️⃣</div>
+                    <h3 class="font-semibold text-lg mb-2">Choose Role</h3>
+                    <p class="text-gray-600">Select the appropriate evaluation for the person's role</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl mb-4">2️⃣</div>
+                    <h3 class="font-semibold text-lg mb-2">Rate Dimensions</h3>
+                    <p class="text-gray-600">Score each skill area using our 1-5 scale with clear descriptions</p>
+                </div>
+                <div class="text-center">
+                    <div class="text-5xl mb-4">3️⃣</div>
+                    <h3 class="font-semibold text-lg mb-2">Review & Export</h3>
+                    <p class="text-gray-600">See the comprehensive overview and export for records</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="mt-16 text-center text-gray-500">
+            <p>Built with ❤️ using vanilla JavaScript, Tailwind CSS, and DaisyUI</p>
+            <p class="mt-2">All evaluations are stored locally in your browser</p>
+        </div>
+    </div>
+</body>
+</html> 

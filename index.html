@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeepleOS - Tools to lead your people</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- DaisyUI -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    
+    <style>
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .feature-card {
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .pulse-dot {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <!-- Hero Section -->
+    <div class="hero min-h-screen hero-gradient">
+        <div class="hero-content text-center text-white">
+            <div class="max-w-4xl">
+                <!-- Logo/Icon -->
+                <div class="mb-8">
+                    <div class="text-8xl mb-4">🎯</div>
+                    <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2">
+                        <div class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></div>
+                        <span class="text-sm font-medium">Tools for People Leaders</span>
+                    </div>
+                </div>
+                
+                <!-- Main Title -->
+                <h1 class="text-6xl md:text-7xl font-bold mb-6">
+                    <span class="bg-gradient-to-r from-yellow-200 via-pink-200 to-blue-200 bg-clip-text text-transparent">
+                        MeepleOS
+                    </span>
+                </h1>
+                
+                <!-- Tagline -->
+                <p class="text-2xl md:text-3xl font-light mb-8 text-blue-100">
+                    Tools to lead your people
+                </p>
+                
+                <!-- Description -->
+                <p class="text-lg md:text-xl mb-12 text-blue-50 max-w-2xl mx-auto leading-relaxed">
+                    A comprehensive platform for people management, from performance reviews to team development. 
+                    Built for leaders who want to unlock their team's potential.
+                </p>
+                
+                <!-- CTA Buttons -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="performance-reviews/" class="btn btn-lg bg-white text-purple-700 hover:bg-blue-50 border-none shadow-lg transform hover:scale-105 transition-all duration-300">
+                        🎯 Performance Reviews
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </a>
+                    <div class="btn btn-lg btn-ghost text-white border-white/30 hover:bg-white/20">
+                        <span class="opacity-60">More tools coming soon...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="container mx-auto px-4 py-20">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">
+                Why Choose MeepleOS?
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Purpose-built tools that help you understand, develop, and retain your most valuable asset—your people.
+            </p>
+        </div>
+
+        <!-- Feature Cards -->
+        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <!-- Comprehensive -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg">
+                <div class="text-5xl mb-6">📊</div>
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">Comprehensive Evaluations</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Multi-dimensional assessments tailored for different roles. From engineers to designers to product managers—each evaluation is crafted for that role's unique skills.
+                </p>
+            </div>
+
+            <!-- Simple -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg">
+                <div class="text-5xl mb-6">⚡</div>
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">Beautifully Simple</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    No complex setup, no overwhelming features. Clean, intuitive interfaces that focus on what matters—understanding and developing your team.
+                </p>
+            </div>
+
+            <!-- Data-Driven -->
+            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg">
+                <div class="text-5xl mb-6">🎯</div>
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">Actionable Insights</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Visual charts, level-specific guidance, and clear expectations help you give meaningful feedback and create development plans that actually work.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Available Tools Section -->
+    <div class="bg-gradient-to-r from-blue-50 to-purple-50 py-20">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">
+                    Available Tools
+                </h2>
+                <p class="text-xl text-gray-600">
+                    Start with performance reviews, more tools coming soon
+                </p>
+            </div>
+
+            <!-- Tool Cards -->
+            <div class="flex justify-center">
+                <div class="max-w-md">
+                    <!-- Performance Reviews Card -->
+                    <a href="performance-reviews/" class="block feature-card bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl">
+                        <div class="text-center">
+                            <div class="text-6xl mb-6">🎯</div>
+                            <h3 class="text-2xl font-semibold mb-4 text-gray-800">Performance Reviews</h3>
+                            <p class="text-gray-600 mb-6 leading-relaxed">
+                                Comprehensive evaluation system for Software Engineers, Product Managers, and UX/UI Designers. 
+                                Level-specific guidance from junior to senior roles.
+                            </p>
+                            <div class="btn btn-primary btn-wide">
+                                Launch Tool
+                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Coming Soon -->
+            <div class="text-center mt-16">
+                <div class="inline-flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-full px-6 py-3">
+                    <div class="w-2 h-2 bg-blue-400 rounded-full pulse-dot"></div>
+                    <span class="text-gray-700 font-medium">Coming Soon: Team Analytics, 1:1 Tracking, Goal Management</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="text-3xl mb-4">🎯</div>
+            <h3 class="text-xl font-semibold mb-2">MeepleOS</h3>
+            <p class="text-gray-400 mb-6">Tools to lead your people</p>
+            
+            <div class="text-sm text-gray-500">
+                <p>Built with ❤️ for people leaders everywhere</p>
+                <p class="mt-2">Simple tools, powerful insights</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html> 
