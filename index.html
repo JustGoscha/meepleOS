@@ -1,190 +1,328 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeepleOS - Tools to lead your people</title>
-    
-    <!-- Tailwind CSS -->
+    <title>MeepleOS — Tools for the long game</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- DaisyUI -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              paper:      '#F2E9D2',
+              paperLight: '#FBF6E6',
+              paperDeep:  '#E7DBB7',
+              ink:        '#1B1714',
+              inkSoft:    '#4A3F33',
+              ember:      '#B5481C',
+              moss:       '#4E6B3B',
+              indigo:     '#33446E',
+              mustard:    '#C99A2E',
+            },
+            fontFamily: {
+              display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+              body:    ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+
     <style>
-        .hero-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .feature-card {
-            transition: all 0.3s ease;
-        }
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-        .pulse-dot {
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
+      html, body { background-color: #F2E9D2; color: #1B1714; }
+      body { font-family: 'Inter Tight', system-ui, sans-serif; }
+      .font-display { font-family: 'Fraunces', Georgia, serif; font-feature-settings: "ss01" on, "ss02" on; }
+
+      /* paper grain — subtle and warm, never busy */
+      body::before {
+        content: '';
+        position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        opacity: .35; mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.07  0 0 0 0.32 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      }
+      main, header, footer { position: relative; z-index: 1; }
+
+      /* tile = board-game card surface: cream, ink border, offset solid shadow */
+      .tile {
+        background: #FBF6E6;
+        border: 1.5px solid #1B1714;
+        box-shadow: 6px 6px 0 0 #1B1714;
+        transition: transform .15s ease, box-shadow .15s ease;
+      }
+      a.tile, button.tile { display: block; }
+      a.tile:hover, button.tile:hover, .tile-hover:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 9px 9px 0 0 #1B1714;
+      }
+      a.tile:active, button.tile:active {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 0 #1B1714;
+      }
+
+      /* rubber-stamp label */
+      .stamp {
+        display: inline-block;
+        border: 1.5px solid currentColor;
+        padding: .15rem .6rem;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        font-size: .68rem;
+        font-weight: 700;
+        transform: rotate(-3deg);
+        border-radius: 2px;
+      }
+
+      .tilt-l { transform: rotate(-1.1deg); }
+      .tilt-r { transform: rotate(1.1deg); }
+      @media (hover: hover) {
+        .tilt-l:hover, .tilt-r:hover { transform: rotate(0) translate(-2px, -2px); }
+      }
+
+      /* "i. ii. iii." numerals look like rulebook headings */
+      .numeral { font-family: 'Fraunces', serif; font-weight: 900; font-style: italic; }
+
+      /* meeple parade — small repeating row */
+      .parade { color: #1B1714; opacity: .25; }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
-    <!-- Hero Section -->
-    <div class="hero min-h-screen hero-gradient">
-        <div class="hero-content text-center text-white">
-            <div class="max-w-4xl">
-                <!-- Logo/Icon -->
-                <div class="mb-8">
-                    <div class="text-8xl mb-4">🎯</div>
-                    <div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-6 py-2">
-                        <div class="w-2 h-2 bg-green-400 rounded-full pulse-dot"></div>
-                        <span class="text-sm font-medium">Tools for People Leaders</span>
-                    </div>
-                </div>
-                
-                <!-- Main Title -->
-                <h1 class="text-6xl md:text-7xl font-bold mb-6">
-                    <span class="bg-gradient-to-r from-yellow-200 via-pink-200 to-blue-200 bg-clip-text text-transparent">
-                        MeepleOS
-                    </span>
-                </h1>
-                
-                <!-- Tagline -->
-                <p class="text-2xl md:text-3xl font-light mb-8 text-blue-100">
-                    Tools to lead your people
-                </p>
-                
-                <!-- Description -->
-                <p class="text-lg md:text-xl mb-12 text-blue-50 max-w-2xl mx-auto leading-relaxed">
-                    A comprehensive platform for people management, from performance reviews to team development. 
-                    Built for leaders who want to unlock their team's potential.
-                </p>
-                
-                <!-- CTA Buttons -->
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <a href="performance-reviews/" class="btn btn-lg bg-white text-purple-700 hover:bg-blue-50 border-none shadow-lg transform hover:scale-105 transition-all duration-300">
-                        🎯 Performance Reviews
-                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                        </svg>
-                    </a>
-                    <div class="btn btn-lg btn-ghost text-white border-white/30 hover:bg-white/20">
-                        <span class="opacity-60">More tools coming soon...</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Scroll Indicator -->
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <svg class="w-6 h-6 text-white/60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-            </svg>
-        </div>
-    </div>
+<body class="min-h-screen">
 
-    <!-- Features Section -->
-    <div class="container mx-auto px-4 py-20">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold text-gray-800 mb-4">
-                Why Choose MeepleOS?
-            </h2>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Purpose-built tools that help you understand, develop, and retain your most valuable asset—your people.
+  <!-- ─────────── HEADER ─────────── -->
+  <header class="border-b-2 border-ink">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-6">
+      <a href="./" class="flex items-center gap-3 group">
+        <svg viewBox="0 0 100 120" class="h-9 w-auto text-ink" aria-hidden="true">
+          <path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/>
+        </svg>
+        <span class="font-display text-2xl font-black tracking-tight">MeepleOS</span>
+      </a>
+      <nav class="flex items-center gap-5 text-sm font-medium">
+        <a href="performance-reviews/" class="hover:underline underline-offset-4 decoration-2">Tools</a>
+        <a href="https://github.com/justgoscha/meepleOS" class="hover:underline underline-offset-4 decoration-2">Source</a>
+        <a href="https://coff.ee/justgoscha" class="hidden sm:inline tile bg-ink text-paperLight px-3 py-1.5 text-xs">Tip jar</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ─────────── HERO ─────────── -->
+    <section class="max-w-6xl mx-auto px-6 pt-16 pb-20 md:pt-24 md:pb-28">
+      <div class="grid md:grid-cols-12 gap-12 items-end">
+
+        <div class="md:col-span-7">
+          <div class="inline-flex items-center gap-3 text-xs tracking-[0.2em] uppercase text-inkSoft mb-7">
+            <span class="w-6 h-px bg-ink inline-block"></span>
+            Volume 1 — for people who lead
+          </div>
+
+          <h1 class="font-display font-black text-[2.7rem] sm:text-6xl md:text-7xl lg:text-[5.5rem] leading-[0.92] tracking-tight">
+            Tools for<br>the long<br>game<span class="text-ember">.</span>
+          </h1>
+
+          <!-- hand-drawn underline -->
+          <svg viewBox="0 0 320 14" class="mt-5 w-64 text-ember" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 8 C 40 1, 80 13, 130 6 S 230 1, 317 8"/>
+          </svg>
+
+          <p class="mt-9 text-lg md:text-xl max-w-xl text-inkSoft leading-relaxed">
+            A small workshop of pragmatic tools for managers and team leads. No dashboards, no decks of jargon — just enough scaffolding to do the human parts well.
+          </p>
+
+          <div class="mt-10 flex flex-wrap gap-4">
+            <a href="performance-reviews/" class="tile inline-flex items-center gap-2 bg-ink text-paperLight font-semibold px-6 py-3.5">
+              Open the toolbox
+              <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </a>
+            <a href="https://github.com/justgoscha/meepleOS" class="tile inline-flex items-center gap-2 bg-paperLight font-semibold px-6 py-3.5">
+              Read the source
+            </a>
+          </div>
+        </div>
+
+        <!-- dictionary-style card -->
+        <div class="md:col-span-5">
+          <div class="tile p-7 md:p-8 max-w-sm mx-auto md:ml-auto md:mr-0 tilt-r">
+            <div class="flex items-baseline justify-between border-b border-ink/30 pb-3 mb-5">
+              <span class="font-display text-2xl font-black tracking-tight">meeple</span>
+              <span class="font-display italic text-sm text-inkSoft">noun · /ˈmiːpəl/</span>
+            </div>
+
+            <!-- meeple illustration -->
+            <div class="flex items-end justify-center gap-3 my-2 mb-4">
+              <svg viewBox="0 0 100 120" class="h-20 text-mustard"><path fill="currentColor" stroke="#1B1714" stroke-width="2.2" stroke-linejoin="round" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+              <svg viewBox="0 0 100 120" class="h-28 text-ember"><path fill="currentColor" stroke="#1B1714" stroke-width="2.2" stroke-linejoin="round" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+              <svg viewBox="0 0 100 120" class="h-24 text-moss"><path fill="currentColor" stroke="#1B1714" stroke-width="2.2" stroke-linejoin="round" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+              <svg viewBox="0 0 100 120" class="h-16 text-indigo"><path fill="currentColor" stroke="#1B1714" stroke-width="2.2" stroke-linejoin="round" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+            </div>
+
+            <p class="font-display text-base leading-snug">
+              <span class="text-inkSoft">1.</span> A small wooden game piece, shaped like a person.
             </p>
+            <p class="font-display text-base leading-snug mt-2">
+              <span class="text-inkSoft">2.</span> A teammate. The kind that wins the long game.
+            </p>
+          </div>
         </div>
 
-        <!-- Feature Cards -->
-        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <!-- Comprehensive -->
-            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg">
-                <div class="text-5xl mb-6">📊</div>
-                <h3 class="text-xl font-semibold mb-4 text-gray-800">Comprehensive Evaluations</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Multi-dimensional assessments tailored for different roles. From engineers to designers to product managers—each evaluation is crafted for that role's unique skills.
-                </p>
-            </div>
+      </div>
+    </section>
 
-            <!-- Simple -->
-            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg">
-                <div class="text-5xl mb-6">⚡</div>
-                <h3 class="text-xl font-semibold mb-4 text-gray-800">Beautifully Simple</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    No complex setup, no overwhelming features. Clean, intuitive interfaces that focus on what matters—understanding and developing your team.
-                </p>
-            </div>
-
-            <!-- Data-Driven -->
-            <div class="feature-card bg-white rounded-2xl p-8 shadow-lg">
-                <div class="text-5xl mb-6">🎯</div>
-                <h3 class="text-xl font-semibold mb-4 text-gray-800">Actionable Insights</h3>
-                <p class="text-gray-600 leading-relaxed">
-                    Visual charts, level-specific guidance, and clear expectations help you give meaningful feedback and create development plans that actually work.
-                </p>
-            </div>
+    <!-- ─────────── IN THE BOX ─────────── -->
+    <section class="border-t-2 border-ink bg-paperDeep/40">
+      <div class="max-w-6xl mx-auto px-6 py-20">
+        <div class="flex items-end justify-between mb-12 flex-wrap gap-4">
+          <h2 class="font-display text-4xl md:text-5xl font-black tracking-tight">In the box</h2>
+          <p class="text-xs tracking-[0.2em] uppercase text-inkSoft">1 tool ready · 2 in playtesting</p>
         </div>
+
+        <div class="grid md:grid-cols-3 gap-7">
+
+          <!-- Performance reviews (live) -->
+          <a href="performance-reviews/" class="tile p-7 flex flex-col tilt-l">
+            <div class="flex items-start justify-between mb-7">
+              <svg viewBox="0 0 56 56" class="w-12 h-12 text-ink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <!-- abstract: radar / scoring sheet -->
+                <polygon points="28,8 46,20 39,42 17,42 10,20" />
+                <polygon points="28,16 40,23 36,37 20,37 16,23" />
+                <circle cx="28" cy="28" r="2" fill="currentColor"/>
+              </svg>
+              <span class="stamp text-ember">Ready</span>
+            </div>
+            <h3 class="font-display text-2xl font-bold mb-2 tracking-tight">Performance reviews</h3>
+            <p class="text-inkSoft text-[0.95rem] leading-relaxed">
+              Role-specific rubrics for engineers, PMs, and designers. Level guidance, radar charts, JSON export. Lives in your browser.
+            </p>
+            <div class="mt-7 pt-5 border-t border-ink/15 flex items-center justify-between text-sm font-semibold">
+              <span>Open</span>
+              <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+            </div>
+          </a>
+
+          <!-- 1:1 ledger (planned) -->
+          <div class="tile p-7 flex flex-col opacity-80">
+            <div class="flex items-start justify-between mb-7">
+              <svg viewBox="0 0 56 56" class="w-12 h-12 text-ink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <rect x="10" y="12" width="22" height="30" rx="2"/>
+                <rect x="24" y="18" width="22" height="30" rx="2"/>
+                <line x1="14" y1="20" x2="28" y2="20"/>
+                <line x1="14" y1="26" x2="28" y2="26"/>
+                <line x1="14" y1="32" x2="24" y2="32"/>
+              </svg>
+              <span class="stamp text-inkSoft">In playtest</span>
+            </div>
+            <h3 class="font-display text-2xl font-bold mb-2 tracking-tight">1:1 ledger</h3>
+            <p class="text-inkSoft text-[0.95rem] leading-relaxed">
+              A quiet place to keep recurring conversations — agendas, follow-ups, themes that show up across the year.
+            </p>
+            <div class="mt-7 pt-5 border-t border-ink/15 text-sm font-semibold text-inkSoft">
+              Soon
+            </div>
+          </div>
+
+          <!-- Team field guide (planned) -->
+          <div class="tile p-7 flex flex-col opacity-80 tilt-r">
+            <div class="flex items-start justify-between mb-7">
+              <svg viewBox="0 0 56 56" class="w-12 h-12 text-ink" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 14 L 28 10 L 44 14 L 44 44 L 28 40 L 12 44 Z"/>
+                <line x1="28" y1="10" x2="28" y2="40"/>
+                <path d="M16 22 L 24 20" />
+                <path d="M16 28 L 24 26" />
+                <path d="M32 22 L 40 20" />
+                <path d="M32 28 L 40 26" />
+              </svg>
+              <span class="stamp text-inkSoft">In playtest</span>
+            </div>
+            <h3 class="font-display text-2xl font-bold mb-2 tracking-tight">Team field guide</h3>
+            <p class="text-inkSoft text-[0.95rem] leading-relaxed">
+              Onboarding the way a rulebook should read — who's who, how decisions get made, what good looks like on this team.
+            </p>
+            <div class="mt-7 pt-5 border-t border-ink/15 text-sm font-semibold text-inkSoft">
+              Soon
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── HOW IT PLAYS ─────────── -->
+    <section class="border-t-2 border-ink">
+      <div class="max-w-6xl mx-auto px-6 py-20">
+        <div class="grid md:grid-cols-12 gap-10">
+          <div class="md:col-span-4">
+            <h2 class="font-display text-4xl md:text-5xl font-black tracking-tight leading-[0.95]">
+              How<br>it plays
+            </h2>
+            <svg viewBox="0 0 200 14" class="mt-4 w-40 text-moss" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+              <path d="M3 8 C 30 2, 60 12, 100 7 S 170 2, 197 8"/>
+            </svg>
+          </div>
+
+          <ol class="md:col-span-8 grid sm:grid-cols-3 gap-8">
+            <li>
+              <div class="numeral text-5xl text-ember mb-3">i.</div>
+              <h3 class="font-display text-xl font-bold mb-2">Pick a tool</h3>
+              <p class="text-inkSoft text-[0.95rem] leading-relaxed">Each tool is self-contained. Use one without the others.</p>
+            </li>
+            <li>
+              <div class="numeral text-5xl text-ember mb-3">ii.</div>
+              <h3 class="font-display text-xl font-bold mb-2">Do the work</h3>
+              <p class="text-inkSoft text-[0.95rem] leading-relaxed">Rubrics, prompts, and structure where they help — and they get out of the way otherwise.</p>
+            </li>
+            <li>
+              <div class="numeral text-5xl text-ember mb-3">iii.</div>
+              <h3 class="font-display text-xl font-bold mb-2">Take it with you</h3>
+              <p class="text-inkSoft text-[0.95rem] leading-relaxed">Export to JSON, paste into your doc, drop into your 1:1. Nothing leaves your browser unless you send it.</p>
+            </li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── PARADE (decoration) ─────────── -->
+    <div class="border-t border-ink/30 overflow-hidden">
+      <div class="max-w-6xl mx-auto px-6 py-6 flex items-end justify-center gap-3 parade" aria-hidden="true">
+        <!-- repeating meeple silhouettes -->
+        <svg viewBox="0 0 100 120" class="h-6"><path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+        <svg viewBox="0 0 100 120" class="h-7"><path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+        <svg viewBox="0 0 100 120" class="h-5"><path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+        <svg viewBox="0 0 100 120" class="h-8"><path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+        <svg viewBox="0 0 100 120" class="h-6"><path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+        <svg viewBox="0 0 100 120" class="h-7"><path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+        <svg viewBox="0 0 100 120" class="h-5"><path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+        <svg viewBox="0 0 100 120" class="h-6"><path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>
+      </div>
     </div>
 
-    <!-- Available Tools Section -->
-    <div class="bg-gradient-to-r from-blue-50 to-purple-50 py-20">
-        <div class="container mx-auto px-4">
-            <div class="text-center mb-16">
-                <h2 class="text-4xl font-bold text-gray-800 mb-4">
-                    Available Tools
-                </h2>
-                <p class="text-xl text-gray-600">
-                    Start with performance reviews, more tools coming soon
-                </p>
-            </div>
+  </main>
 
-            <!-- Tool Cards -->
-            <div class="flex justify-center">
-                <div class="max-w-md">
-                    <!-- Performance Reviews Card -->
-                    <a href="performance-reviews/" class="block feature-card bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl">
-                        <div class="text-center">
-                            <div class="text-6xl mb-6">🎯</div>
-                            <h3 class="text-2xl font-semibold mb-4 text-gray-800">Performance Reviews</h3>
-                            <p class="text-gray-600 mb-6 leading-relaxed">
-                                Comprehensive evaluation system for Software Engineers, Product Managers, and UX/UI Designers. 
-                                Level-specific guidance from junior to senior roles.
-                            </p>
-                            <div class="btn btn-primary btn-wide">
-                                Launch Tool
-                                <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                                </svg>
-                            </div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Coming Soon -->
-            <div class="text-center mt-16">
-                <div class="inline-flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-full px-6 py-3">
-                    <div class="w-2 h-2 bg-blue-400 rounded-full pulse-dot"></div>
-                    <span class="text-gray-700 font-medium">Coming Soon: Team Analytics, 1:1 Tracking, Goal Management</span>
-                </div>
-            </div>
+  <!-- ─────────── FOOTER ─────────── -->
+  <footer class="border-t-2 border-ink">
+    <div class="max-w-6xl mx-auto px-6 py-12 flex flex-wrap items-end justify-between gap-8">
+      <div>
+        <div class="flex items-center gap-3 mb-3">
+          <svg viewBox="0 0 100 120" class="h-7 text-ink" aria-hidden="true">
+            <path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/>
+          </svg>
+          <span class="font-display text-xl font-black tracking-tight">MeepleOS</span>
         </div>
+        <p class="text-sm text-inkSoft max-w-sm leading-relaxed">
+          Open source. No accounts, no tracking. Your notes never leave your browser.
+        </p>
+      </div>
+      <div class="text-sm text-inkSoft">
+        <p>MIT licensed · made by <a href="https://github.com/justgoscha" class="underline underline-offset-4 decoration-2 hover:text-ink">justgoscha</a></p>
+        <p class="mt-1">If this helped, <a href="https://coff.ee/justgoscha" class="underline underline-offset-4 decoration-2 hover:text-ink">buy me a coffee</a>.</p>
+      </div>
     </div>
+  </footer>
 
-    <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12">
-        <div class="container mx-auto px-4 text-center">
-            <div class="text-3xl mb-4">🎯</div>
-            <h3 class="text-xl font-semibold mb-2">MeepleOS</h3>
-            <p class="text-gray-400 mb-6">Tools to lead your people</p>
-            
-            <div class="text-sm text-gray-500">
-                <p>Built with ❤️ for people leaders everywhere</p>
-                <p class="mt-2">Simple tools, powerful insights</p>
-            </div>
-        </div>
-    </footer>
 </body>
-</html> 
+</html>

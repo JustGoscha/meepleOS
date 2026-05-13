@@ -1,152 +1,355 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meeple OS</title>
-    
-    <!-- Tailwind CSS -->
+    <title>Performance reviews · MeepleOS</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- DaisyUI -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              paper:      '#F2E9D2',
+              paperLight: '#FBF6E6',
+              paperDeep:  '#E7DBB7',
+              ink:        '#1B1714',
+              inkSoft:    '#4A3F33',
+              ember:      '#B5481C',
+              moss:       '#4E6B3B',
+              indigo:     '#33446E',
+              mustard:    '#C99A2E',
+            },
+            fontFamily: {
+              display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+              body:    ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      html, body { background-color: #F2E9D2; color: #1B1714; }
+      body { font-family: 'Inter Tight', system-ui, sans-serif; }
+      .font-display { font-family: 'Fraunces', Georgia, serif; font-feature-settings: "ss01" on, "ss02" on; }
+
+      body::before {
+        content: '';
+        position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        opacity: .35; mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.07  0 0 0 0.32 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      }
+      main, header, footer { position: relative; z-index: 1; }
+
+      .tile {
+        background: #FBF6E6;
+        border: 1.5px solid #1B1714;
+        box-shadow: 6px 6px 0 0 #1B1714;
+        transition: transform .15s ease, box-shadow .15s ease;
+      }
+      a.tile, button.tile { display: block; }
+      a.tile:hover, button.tile:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 9px 9px 0 0 #1B1714;
+      }
+      a.tile:active, button.tile:active {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 0 #1B1714;
+      }
+
+      .stamp {
+        display: inline-block;
+        border: 1.5px solid currentColor;
+        padding: .15rem .6rem;
+        letter-spacing: .14em;
+        text-transform: uppercase;
+        font-size: .68rem;
+        font-weight: 700;
+        transform: rotate(-3deg);
+        border-radius: 2px;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #1B1714;
+        padding: .15rem .55rem;
+        font-size: .72rem;
+        font-weight: 500;
+        background: #F2E9D2;
+        border-radius: 2px;
+      }
+
+      .tilt-l { transform: rotate(-1deg); }
+      .tilt-r { transform: rotate(1deg); }
+      @media (hover: hover) {
+        .tilt-l:hover, .tilt-r:hover { transform: rotate(0) translate(-2px, -2px); }
+      }
+
+      .numeral { font-family: 'Fraunces', serif; font-weight: 900; font-style: italic; }
+
+      /* shifting the secondary "view original" link so it's clearly secondary */
+      .ghost-link {
+        font-size: .75rem;
+        text-decoration: underline;
+        text-decoration-thickness: 1.5px;
+        text-underline-offset: 3px;
+      }
+    </style>
 </head>
-<body class="bg-gradient-to-br from-indigo-50 to-purple-50 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <!-- Header -->
-        <div class="text-center mb-12">
-            <h1 class="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-4">
-                🎯 Meeple OS
-            </h1>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                Comprehensive evaluation systems for different roles in your organization. 
-                Each evaluation is tailored to the specific skills and expectations of the role.
-            </p>
-        </div>
+<body class="min-h-screen">
 
-        <!-- Role Cards -->
-        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <!-- Software Engineers -->
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <div class="text-6xl mb-4">⚙️</div>
-                        <h2 class="card-title text-2xl justify-center">Software Engineers</h2>
-                    </div>
-                    <p class="text-gray-600 text-center mb-6">
-                        Evaluate technical execution, system design, collaboration, and impact across junior to senior levels.
-                    </p>
-                    <div class="text-sm text-gray-500 mb-4">
-                        <strong>Dimensions:</strong> Technical Execution, System Design, Collaboration, Ownership, Product Understanding, Growth, Impact
-                    </div>
-                    <div class="card-actions justify-center">
-                        <a href="software-engineers-new/" class="btn btn-primary">
-                            🚀 Evaluate Engineer
-                        </a>
-                        <a href="software-engineers/" class="btn btn-ghost btn-sm">
-                            📚 View Original
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Product Managers -->
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <div class="text-6xl mb-4">🎯</div>
-                        <h2 class="card-title text-2xl justify-center">Product Managers</h2>
-                    </div>
-                    <p class="text-gray-600 text-center mb-6">
-                        Assess product strategy, user research, data analysis, and stakeholder management capabilities.
-                    </p>
-                    <div class="text-sm text-gray-500 mb-4">
-                        <strong>Dimensions:</strong> Strategy, User Research, Data Analysis, Stakeholder Management, Technical Collaboration, Execution, Business Acumen
-                    </div>
-                    <div class="card-actions justify-center">
-                        <a href="product/" class="btn btn-secondary">
-                            📊 Evaluate PM
-                        </a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Designers -->
-            <div class="card bg-base-100 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2">
-                <div class="card-body">
-                    <div class="text-center mb-4">
-                        <div class="text-6xl mb-4">🎨</div>
-                        <h2 class="card-title text-2xl justify-center">UX/UI Designers</h2>
-                    </div>
-                    <p class="text-gray-600 text-center mb-6">
-                        Review visual design skills, user experience thinking, research abilities, and business impact.
-                    </p>
-                    <div class="text-sm text-gray-500 mb-4">
-                        <strong>Dimensions:</strong> Visual Design, User Experience, Research, Prototyping, Collaboration, Design Systems, Business Impact
-                    </div>
-                    <div class="card-actions justify-center">
-                        <a href="design/" class="btn btn-accent">
-                            🎨 Evaluate Designer
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Features Section -->
-        <div class="mt-16">
-            <h2 class="text-3xl font-bold text-center mb-8">✨ Features</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-                <div class="text-center p-6">
-                    <div class="text-4xl mb-3">📊</div>
-                    <h3 class="font-semibold mb-2">Interactive Charts</h3>
-                    <p class="text-sm text-gray-600">Real-time radar charts that visualize performance across all dimensions</p>
-                </div>
-                <div class="text-center p-6">
-                    <div class="text-4xl mb-3">🎯</div>
-                    <h3 class="font-semibold mb-2">Level-Specific Guidance</h3>
-                    <p class="text-sm text-gray-600">Detailed expectations for each skill level from junior to senior</p>
-                </div>
-                <div class="text-center p-6">
-                    <div class="text-4xl mb-3">💾</div>
-                    <h3 class="font-semibold mb-2">Auto-Save</h3>
-                    <p class="text-sm text-gray-600">Your evaluations are automatically saved locally as you work</p>
-                </div>
-                <div class="text-center p-6">
-                    <div class="text-4xl mb-3">📤</div>
-                    <h3 class="font-semibold mb-2">Export Results</h3>
-                    <p class="text-sm text-gray-600">Download comprehensive evaluation reports in JSON format</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- How It Works -->
-        <div class="mt-16 bg-base-200 rounded-lg p-8">
-            <h2 class="text-3xl font-bold text-center mb-8">🚀 How It Works</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                <div class="text-center">
-                    <div class="text-5xl mb-4">1️⃣</div>
-                    <h3 class="font-semibold text-lg mb-2">Choose Role</h3>
-                    <p class="text-gray-600">Select the appropriate evaluation for the person's role</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-5xl mb-4">2️⃣</div>
-                    <h3 class="font-semibold text-lg mb-2">Rate Dimensions</h3>
-                    <p class="text-gray-600">Score each skill area using our 1-5 scale with clear descriptions</p>
-                </div>
-                <div class="text-center">
-                    <div class="text-5xl mb-4">3️⃣</div>
-                    <h3 class="font-semibold text-lg mb-2">Review & Export</h3>
-                    <p class="text-gray-600">See the comprehensive overview and export for records</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="mt-16 text-center text-gray-500">
-            <p>Built with ❤️ using vanilla JavaScript, Tailwind CSS, and DaisyUI</p>
-            <p class="mt-2">All evaluations are stored locally in your browser</p>
-        </div>
+  <!-- ─────────── HEADER ─────────── -->
+  <header class="border-b-2 border-ink">
+    <div class="max-w-6xl mx-auto px-6 py-5 flex items-center justify-between gap-6">
+      <a href="../" class="flex items-center gap-3 group">
+        <svg viewBox="0 0 100 120" class="h-9 w-auto text-ink" aria-hidden="true">
+          <path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/>
+        </svg>
+        <span class="font-display text-2xl font-black tracking-tight">MeepleOS</span>
+      </a>
+      <nav class="flex items-center gap-5 text-sm font-medium">
+        <a href="../" class="hover:underline underline-offset-4 decoration-2">Home</a>
+        <a href="https://github.com/justgoscha/meepleOS" class="hover:underline underline-offset-4 decoration-2">Source</a>
+        <a href="https://coff.ee/justgoscha" class="hidden sm:inline tile bg-ink text-paperLight px-3 py-1.5 text-xs">Tip jar</a>
+      </nav>
     </div>
+  </header>
+
+  <main>
+
+    <!-- ─────────── BREADCRUMB / TITLE ─────────── -->
+    <section class="max-w-6xl mx-auto px-6 pt-14 pb-10 md:pt-20 md:pb-14">
+      <div class="flex items-center gap-3 text-xs tracking-[0.2em] uppercase text-inkSoft mb-7">
+        <a href="../" class="hover:text-ink">MeepleOS</a>
+        <span class="opacity-60">/</span>
+        <span>Tool 01</span>
+      </div>
+
+      <div class="grid md:grid-cols-12 gap-10 items-end">
+        <div class="md:col-span-8">
+          <h1 class="font-display font-black text-5xl md:text-7xl leading-[0.95] tracking-tight">
+            Performance<br>reviews<span class="text-ember">.</span>
+          </h1>
+          <svg viewBox="0 0 320 14" class="mt-4 w-72 text-ember" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 8 C 40 1, 80 13, 130 6 S 230 1, 317 8"/>
+          </svg>
+          <p class="mt-7 text-lg md:text-xl max-w-2xl text-inkSoft leading-relaxed">
+            Three role-specific rubrics, with level guidance from junior to staff. Pick a role and start scoring — everything saves to your browser.
+          </p>
+        </div>
+
+        <!-- "Rules" stamp card -->
+        <div class="md:col-span-4">
+          <div class="tile p-5 max-w-xs md:ml-auto tilt-r">
+            <div class="flex items-center gap-3 mb-3">
+              <span class="stamp text-ember">House rules</span>
+            </div>
+            <ul class="font-display text-[0.95rem] leading-snug space-y-1.5">
+              <li><span class="text-inkSoft mr-1">·</span>Score 1–5 per dimension.</li>
+              <li><span class="text-inkSoft mr-1">·</span>Read the level guidance.</li>
+              <li><span class="text-inkSoft mr-1">·</span>Export when you're done.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── ROLE CARDS ─────────── -->
+    <section class="border-t-2 border-ink bg-paperDeep/40">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        <div class="flex items-end justify-between mb-10 flex-wrap gap-4">
+          <h2 class="font-display text-3xl md:text-4xl font-black tracking-tight">Pick a role</h2>
+          <p class="text-xs tracking-[0.2em] uppercase text-inkSoft">3 rubrics</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-7">
+
+          <!-- ── Software Engineer ── -->
+          <article class="tile p-7 flex flex-col tilt-l">
+            <div class="flex items-start justify-between mb-7">
+              <!-- icon: brackets + tokens -->
+              <svg viewBox="0 0 56 56" class="w-14 h-14 text-ember" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M16 14 L 8 28 L 16 42"/>
+                <path d="M40 14 L 48 28 L 40 42"/>
+                <circle cx="28" cy="22" r="2.5" fill="currentColor"/>
+                <circle cx="28" cy="28" r="2.5" fill="currentColor"/>
+                <circle cx="28" cy="34" r="2.5" fill="currentColor"/>
+              </svg>
+              <span class="numeral text-3xl text-inkSoft">i</span>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold tracking-tight">Software engineers</h3>
+            <p class="mt-2 text-inkSoft text-[0.95rem] leading-relaxed">
+              Technical execution, system design, ownership, and impact — from junior through senior.
+            </p>
+
+            <div class="mt-5 flex flex-wrap gap-1.5">
+              <span class="chip">Execution</span>
+              <span class="chip">System design</span>
+              <span class="chip">Collaboration</span>
+              <span class="chip">Ownership</span>
+              <span class="chip">Impact</span>
+            </div>
+
+            <div class="mt-7 pt-5 border-t border-ink/15 flex items-center justify-between gap-3">
+              <a href="software-engineers-new/" class="tile inline-flex items-center gap-2 bg-ink text-paperLight font-semibold px-4 py-2.5 text-sm">
+                Open rubric
+                <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </a>
+              <a href="software-engineers/" class="ghost-link text-inkSoft hover:text-ink">Original version</a>
+            </div>
+          </article>
+
+          <!-- ── Product Manager ── -->
+          <article class="tile p-7 flex flex-col tilt-r">
+            <div class="flex items-start justify-between mb-7">
+              <!-- icon: target + arrow -->
+              <svg viewBox="0 0 56 56" class="w-14 h-14 text-indigo" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="28" cy="28" r="18"/>
+                <circle cx="28" cy="28" r="11"/>
+                <circle cx="28" cy="28" r="4" fill="currentColor"/>
+                <path d="M40 16 L 48 8"/>
+                <path d="M44 8 L 48 8 L 48 12"/>
+              </svg>
+              <span class="numeral text-3xl text-inkSoft">ii</span>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold tracking-tight">Product managers</h3>
+            <p class="mt-2 text-inkSoft text-[0.95rem] leading-relaxed">
+              Strategy, user research, data, stakeholders, and the bits between — what makes a PM actually move the needle.
+            </p>
+
+            <div class="mt-5 flex flex-wrap gap-1.5">
+              <span class="chip">Strategy</span>
+              <span class="chip">Research</span>
+              <span class="chip">Data</span>
+              <span class="chip">Stakeholders</span>
+              <span class="chip">Execution</span>
+            </div>
+
+            <div class="mt-7 pt-5 border-t border-ink/15">
+              <a href="product/" class="tile inline-flex items-center gap-2 bg-ink text-paperLight font-semibold px-4 py-2.5 text-sm">
+                Open rubric
+                <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </article>
+
+          <!-- ── Designer ── -->
+          <article class="tile p-7 flex flex-col tilt-l">
+            <div class="flex items-start justify-between mb-7">
+              <!-- icon: design primitives -->
+              <svg viewBox="0 0 56 56" class="w-14 h-14 text-moss" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="18" cy="20" r="8"/>
+                <rect x="30" y="12" width="16" height="16"/>
+                <polygon points="28,46 14,46 21,34"/>
+                <polygon points="44,46 32,46 38,36" fill="currentColor"/>
+              </svg>
+              <span class="numeral text-3xl text-inkSoft">iii</span>
+            </div>
+
+            <h3 class="font-display text-2xl font-bold tracking-tight">UX / UI designers</h3>
+            <p class="mt-2 text-inkSoft text-[0.95rem] leading-relaxed">
+              Visual craft, user thinking, research, prototyping, and the shape of work shipped into the world.
+            </p>
+
+            <div class="mt-5 flex flex-wrap gap-1.5">
+              <span class="chip">Visual</span>
+              <span class="chip">UX</span>
+              <span class="chip">Research</span>
+              <span class="chip">Prototyping</span>
+              <span class="chip">Systems</span>
+            </div>
+
+            <div class="mt-7 pt-5 border-t border-ink/15">
+              <a href="design/" class="tile inline-flex items-center gap-2 bg-ink text-paperLight font-semibold px-4 py-2.5 text-sm">
+                Open rubric
+                <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────── WHAT'S INSIDE ─────────── -->
+    <section class="border-t-2 border-ink">
+      <div class="max-w-6xl mx-auto px-6 py-16">
+        <div class="grid md:grid-cols-12 gap-10">
+          <div class="md:col-span-4">
+            <h2 class="font-display text-3xl md:text-4xl font-black tracking-tight leading-[0.95]">What's<br>inside</h2>
+            <svg viewBox="0 0 200 14" class="mt-4 w-44 text-mustard" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+              <path d="M3 8 C 30 2, 60 12, 100 7 S 170 2, 197 8"/>
+            </svg>
+            <p class="mt-5 text-inkSoft leading-relaxed max-w-sm">
+              Everything is local. Nothing posts to a server, nothing tracks you. The pages are static HTML — go read the source.
+            </p>
+          </div>
+
+          <ul class="md:col-span-8 grid sm:grid-cols-2 gap-7">
+            <li class="flex gap-4">
+              <span class="numeral text-3xl text-ember leading-none mt-1">·</span>
+              <div>
+                <h3 class="font-display text-lg font-bold mb-1">Level guidance</h3>
+                <p class="text-inkSoft text-[0.95rem] leading-relaxed">Each dimension has a description for every level, so a 3 means the same thing twice.</p>
+              </div>
+            </li>
+            <li class="flex gap-4">
+              <span class="numeral text-3xl text-ember leading-none mt-1">·</span>
+              <div>
+                <h3 class="font-display text-lg font-bold mb-1">Radar chart</h3>
+                <p class="text-inkSoft text-[0.95rem] leading-relaxed">A live shape of strengths and gaps — useful for the conversation, not just the form.</p>
+              </div>
+            </li>
+            <li class="flex gap-4">
+              <span class="numeral text-3xl text-ember leading-none mt-1">·</span>
+              <div>
+                <h3 class="font-display text-lg font-bold mb-1">Local autosave</h3>
+                <p class="text-inkSoft text-[0.95rem] leading-relaxed">Close the tab, come back, pick up where you left off. No accounts.</p>
+              </div>
+            </li>
+            <li class="flex gap-4">
+              <span class="numeral text-3xl text-ember leading-none mt-1">·</span>
+              <div>
+                <h3 class="font-display text-lg font-bold mb-1">JSON export</h3>
+                <p class="text-inkSoft text-[0.95rem] leading-relaxed">Take the scores out — paste into your doc, ATS, or wherever your review actually lives.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─────────── FOOTER ─────────── -->
+  <footer class="border-t-2 border-ink">
+    <div class="max-w-6xl mx-auto px-6 py-12 flex flex-wrap items-end justify-between gap-8">
+      <div>
+        <div class="flex items-center gap-3 mb-3">
+          <svg viewBox="0 0 100 120" class="h-7 text-ink" aria-hidden="true">
+            <path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/>
+          </svg>
+          <span class="font-display text-xl font-black tracking-tight">MeepleOS</span>
+        </div>
+        <p class="text-sm text-inkSoft max-w-sm leading-relaxed">
+          Open source. No accounts, no tracking. Your notes never leave your browser.
+        </p>
+      </div>
+      <div class="text-sm text-inkSoft">
+        <p>MIT licensed · made by <a href="https://github.com/justgoscha" class="underline underline-offset-4 decoration-2 hover:text-ink">justgoscha</a></p>
+        <p class="mt-1">If this helped, <a href="https://coff.ee/justgoscha" class="underline underline-offset-4 decoration-2 hover:text-ink">buy me a coffee</a>.</p>
+      </div>
+    </div>
+  </footer>
+
 </body>
-</html> 
+</html>

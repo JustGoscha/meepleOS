@@ -1,32 +1,87 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="meeple">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Designer Evaluation</title>
-    
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- DaisyUI -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
-    
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body class="bg-gradient-to-br from-pink-50 to-purple-50 min-h-screen">
-    <div id="evaluation-container"></div>
+    <title>Designer review · MeepleOS</title>
 
-    <!-- Include the reusable evaluation library -->
-    <script src="../evaluation.js"></script>
-    
-    <!-- Include the designer configuration -->
-    <script src="../configs/designer.js"></script>
-    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.19/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
     <script>
-        // Initialize the evaluation system
-        const evaluation = new EvaluationSystem(designerConfig);
-        evaluation.init('evaluation-container');
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              paper:'#F2E9D2', paperLight:'#FBF6E6', paperDeep:'#E7DBB7',
+              ink:'#1B1714', inkSoft:'#4A3F33',
+              ember:'#B5481C', moss:'#4E6B3B', indigo:'#33446E', mustard:'#C99A2E',
+            },
+            fontFamily: {
+              display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+              body:    ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            }
+          }
+        }
+      }
     </script>
+
+    <style>
+      :root, [data-theme="meeple"] {
+        --p:  17 75% 41%;   --pc: 45 70% 94%;
+        --s:  96 28% 33%;   --sc: 45 70% 94%;
+        --a:  42 64% 49%;   --ac: 22 14% 9%;
+        --n:  22 14% 9%;    --nc: 45 70% 94%;
+        --b1: 45 70% 94%;   --b2: 43 53% 88%;   --b3: 43 38% 78%;
+        --bc: 22 14% 9%;
+        --rounded-box: 0.15rem;
+        --rounded-btn: 0.15rem;
+        --rounded-badge: 0.15rem;
+      }
+
+      html, body { background-color: #F2E9D2; color: #1B1714; }
+      body { font-family: 'Inter Tight', system-ui, sans-serif; }
+      .font-display { font-family: 'Fraunces', Georgia, serif; }
+
+      body::before {
+        content: '';
+        position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        opacity: .30; mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.07  0 0 0 0.32 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      }
+      main, header { position: relative; z-index: 1; }
+    </style>
+</head>
+<body class="min-h-screen">
+
+  <header class="border-b-2 border-ink">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+      <a href="../../" class="flex items-center gap-3">
+        <svg viewBox="0 0 100 120" class="h-7 w-auto text-ink" aria-hidden="true">
+          <path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/>
+        </svg>
+        <span class="font-display text-lg font-black tracking-tight">MeepleOS</span>
+      </a>
+      <nav class="flex items-center gap-5 text-sm font-medium">
+        <a href="../" class="hover:underline underline-offset-4 decoration-2">← All tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div id="evaluation-container"></div>
+  </main>
+
+  <script src="../evaluation.js"></script>
+  <script src="../configs/designer.js"></script>
+  <script>
+    const evaluation = new EvaluationSystem(designerConfig);
+    evaluation.init('evaluation-container');
+  </script>
 </body>
-</html> 
+</html>

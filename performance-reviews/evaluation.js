@@ -47,110 +47,245 @@ class EvaluationSystem {
     generateHTML() {
         return `
             ${this.generateCSS()}
-            <div class="container mx-auto px-3 py-4">
+            <div class="max-w-7xl mx-auto px-6 py-10">
                 ${this.generateHeader()}
                 ${this.generatePersonInfo()}
-                <div class="grid lg:grid-cols-2 gap-4">
-                    ${this.generateRatingsSection()}
-                    ${this.generateChartsSection()}
+                <div class="grid lg:grid-cols-5 gap-6 mt-6">
+                    <div class="lg:col-span-3">${this.generateRatingsSection()}</div>
+                    <div class="lg:col-span-2">${this.generateChartsSection()}</div>
                 </div>
             </div>
         `;
     }
 
+    // Strip the leading emoji from config strings so the new design isn't fighting old icons.
+    stripLeadingEmoji(s) {
+        if (!s) return s;
+        return s.replace(/^[\p{Extended_Pictographic}‍️\s]+/u, '').trim();
+    }
+
+    meepleSVG(extraClass = '') {
+        return `<svg viewBox="0 0 100 120" class="${extraClass}" aria-hidden="true"><path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/></svg>`;
+    }
+
     generateCSS() {
         return `
             <style>
+                /* —— MeepleOS paper theme —— */
+                .e-stamp {
+                    display: inline-block;
+                    border: 1.5px solid currentColor;
+                    padding: .15rem .55rem;
+                    letter-spacing: .14em;
+                    text-transform: uppercase;
+                    font-size: .65rem;
+                    font-weight: 700;
+                    transform: rotate(-2deg);
+                }
+                .e-tile {
+                    background: #FBF6E6;
+                    border: 1.5px solid #1B1714;
+                    box-shadow: 6px 6px 0 0 #1B1714;
+                }
+                .e-tile-flat {
+                    background: #FBF6E6;
+                    border: 1.5px solid #1B1714;
+                }
+                .e-display { font-family: 'Fraunces', Georgia, serif; }
+
+                .dim-num {
+                    font-family: 'Fraunces', serif;
+                    font-style: italic;
+                    font-weight: 900;
+                    color: #4A3F33;
+                    font-size: 1.05rem;
+                    min-width: 1.6rem;
+                    text-align: right;
+                    display: inline-block;
+                }
+                .dim-title {
+                    font-family: 'Fraunces', serif;
+                    font-weight: 800;
+                    font-size: 1.05rem;
+                    letter-spacing: -0.005em;
+                }
+
+                /* collapse override */
                 .collapse { overflow: visible; }
-                .rating-card { transition: all 0.3s ease; }
-                .rating-card:hover { transform: translateY(-2px); }
+                .dimension-card {
+                    background: #FBF6E6;
+                    border: 1.5px solid #1B1714;
+                    box-shadow: 4px 4px 0 0 #1B1714;
+                    transition: box-shadow .15s ease, transform .15s ease;
+                }
+                .dimension-card:hover { box-shadow: 6px 6px 0 0 #1B1714; transform: translate(-1px,-1px); }
+                .dimension-card .collapse-title:after {
+                    color: #1B1714 !important;
+                }
+
+                /* rating scale */
                 .rating-labels {
                     display: grid;
                     grid-template-columns: repeat(5, 1fr);
-                    gap: 0.5rem;
-                    margin-top: 0.5rem;
+                    gap: 0.4rem;
+                    margin-top: 1rem;
                 }
                 .rating-label {
                     text-align: center;
-                    font-size: 0.75rem;
-                    padding: 0.25rem;
-                    border-radius: 0.25rem;
-                    background: rgba(0,0,0,0.05);
+                    font-size: .72rem;
+                    font-weight: 500;
+                    padding: .55rem .35rem;
+                    border: 1.25px solid #1B1714;
+                    background: #FBF6E6;
+                    color: #1B1714;
+                    cursor: pointer;
+                    line-height: 1.2;
+                    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
                 }
-                .rating-label.active {
-                    background: rgba(147, 51, 234, 0.2);
-                    color: rgb(147, 51, 234);
-                    font-weight: 600;
+                .rating-label:hover { transform: translate(-1px,-1px); box-shadow: 2px 2px 0 0 #1B1714; }
+                .rating-label .num {
+                    display: block;
+                    font-family: 'Fraunces', serif;
+                    font-weight: 900;
+                    font-size: 1.05rem;
+                    margin-bottom: .15rem;
                 }
+                .rating-label.active { background: #1B1714; color: #FBF6E6; }
+
+                /* slider */
+                input[type=range].range {
+                    --range-shdw: #1B1714;
+                    height: 1.75rem;
+                    accent-color: #B5481C;
+                }
+
+                /* level toggle (Junior / Mid / Senior buttons) */
+                .level-toggle {
+                    background: #FBF6E6 !important;
+                    border: 1.5px solid #1B1714 !important;
+                    color: #1B1714 !important;
+                    border-radius: 0 !important;
+                    font-weight: 600 !important;
+                    text-transform: none !important;
+                    letter-spacing: 0 !important;
+                    box-shadow: none !important;
+                    min-height: 2.75rem;
+                    transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
+                }
+                .level-toggle:hover { background: #F2E9D2 !important; }
+                .level-toggle + .level-toggle { border-left: none !important; }
+                .level-toggle.active {
+                    background: #1B1714 !important;
+                    color: #FBF6E6 !important;
+                }
+
+                ${this.generateLevelCardCSS()}
+                ${this.generateSelectedRatingCSS()}
+                ${this.generateOverallRatingCSS()}
+
+                /* per-level cards inside a dimension */
                 .level-card {
-                    transition: all 0.3s ease;
-                    opacity: 0.6;
+                    background: #FBF6E6;
+                    border: 1.5px solid #1B1714;
+                    border-radius: 0 !important;
+                    padding: .85rem 1rem .85rem 1.5rem !important;
+                    position: relative;
+                    opacity: .55;
+                    transition: opacity .15s ease, transform .15s ease, box-shadow .15s ease;
+                }
+                .level-card::before {
+                    content: '';
+                    position: absolute;
+                    left: 0; top: 0; bottom: 0;
+                    width: 8px;
+                    background: var(--stripe, #4E6B3B);
                 }
                 .level-card.highlighted {
                     opacity: 1;
-                    transform: scale(1.02);
-                    box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                    transform: translate(-2px,-2px);
+                    box-shadow: 4px 4px 0 0 #1B1714;
                 }
-                ${this.generateLevelCardCSS()}
-                ${this.generateLevelToggleCSS()}
-                ${this.generateSelectedRatingCSS()}
-                ${this.generateOverallRatingCSS()}
+                .level-card .level-name {
+                    font-family: 'Fraunces', serif;
+                    font-weight: 800;
+                    font-size: 1rem;
+                    margin-bottom: .15rem;
+                    color: #1B1714;
+                    display: flex;
+                    align-items: center;
+                    gap: .5rem;
+                }
+                .level-card .level-name .meeple-ico {
+                    width: 1em; height: 1.2em;
+                    color: var(--stripe);
+                    flex: 0 0 auto;
+                }
+                .level-card .level-text {
+                    color: #4A3F33;
+                    font-size: .9rem;
+                    line-height: 1.45;
+                }
+
+                /* name input — rulebook field */
                 .typeform-input {
                     background: transparent;
                     border: none;
-                    border-bottom: 3px solid #e5e7eb;
+                    border-bottom: 2.5px solid #1B1714;
                     border-radius: 0;
-                    font-size: 2rem;
-                    font-weight: 700;
-                    padding: 0.5rem 0;
-                    transition: all 0.3s ease;
-                    color: #1f2937;
+                    font-family: 'Fraunces', serif;
+                    font-size: 1.65rem;
+                    font-weight: 800;
+                    padding: .35rem 0;
+                    color: #1B1714;
+                    width: 100%;
+                    transition: border-color .15s ease;
                 }
                 .typeform-input:focus {
                     outline: none;
-                    border-bottom-color: rgb(147, 51, 234);
-                    box-shadow: 0 3px 0 0 rgba(147, 51, 234, 0.1);
+                    border-bottom-color: #B5481C;
                 }
                 .typeform-input::placeholder {
-                    color: #9ca3af;
-                    font-weight: 400;
+                    color: #9C8E78;
+                    font-weight: 500;
+                    font-style: italic;
+                }
+
+                /* buttons */
+                .e-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: .4rem;
+                    background: #1B1714;
+                    color: #FBF6E6;
+                    border: 1.5px solid #1B1714;
+                    box-shadow: 3px 3px 0 0 #1B1714;
+                    border-radius: 0;
+                    padding: .55rem 1rem;
+                    font-weight: 600;
+                    font-size: .85rem;
+                    cursor: pointer;
+                    transition: transform .12s ease, box-shadow .12s ease;
+                }
+                .e-btn:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 0 #1B1714; }
+                .e-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 0 #1B1714; }
+                .e-btn.ghost {
+                    background: #FBF6E6;
+                    color: #1B1714;
                 }
             </style>
         `;
     }
 
-    generateLevelCardCSS() {
-        return this.config.levels.map((level, index) => {
-            const colors = ['green', 'blue', 'purple'];
-            const color = colors[index % colors.length];
-            return `.level-card.highlighted.${level.key}-level {
-                border-color: rgb(${this.getColorRGB(color)});
-                box-shadow: 0 8px 25px -5px rgba(${this.getColorRGB(color)}, 0.3);
-            }`;
-        }).join('\n');
+    // Map each level key to a paper-palette accent (moss → mustard → ember = growth → mastery).
+    getLevelAccent(index) {
+        const palette = ['#4E6B3B', '#C99A2E', '#B5481C'];
+        return palette[index % palette.length];
     }
 
-    generateLevelToggleCSS() {
+    generateLevelCardCSS() {
         return this.config.levels.map((level, index) => {
-            const colors = ['green', 'blue', 'purple'];
-            const color = colors[index % colors.length];
-            const rgb = this.getColorRGB(color);
-            return `
-                .${level.key}-toggle {
-                    background: linear-gradient(135deg, rgba(${rgb}, 0.1), rgba(${rgb}, 0.05));
-                    border-color: rgba(${rgb}, 0.2);
-                }
-                .${level.key}-toggle.active {
-                    background: linear-gradient(135deg, rgb(${rgb}), rgb(${this.getDarkerColorRGB(color)}));
-                    color: white;
-                    border-color: rgb(${rgb});
-                    transform: translateY(-2px);
-                    box-shadow: 0 8px 25px rgba(${rgb}, 0.4);
-                }
-                .${level.key}-toggle.active img {
-                    filter: brightness(0) invert(1);
-                }
-            `;
+            const accent = this.getLevelAccent(index);
+            return `.level-card.${level.key}-level { --stripe: ${accent}; }`;
         }).join('\n');
     }
 
@@ -160,102 +295,95 @@ class EvaluationSystem {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                width: 2rem;
-                height: 2rem;
-                border-radius: 50%;
-                background: linear-gradient(135deg, rgb(147, 51, 234), rgb(126, 34, 206));
-                color: white;
-                font-weight: bold;
-                font-size: 0.875rem;
-                margin-right: 0.5rem;
-                box-shadow: 0 0 20px rgba(147, 51, 234, 0.6);
+                width: 1.85rem;
+                height: 1.85rem;
+                background: #1B1714;
+                color: #FBF6E6;
+                font-family: 'Fraunces', serif;
+                font-weight: 900;
+                font-size: .95rem;
+                margin-right: .35rem;
+                border: 1.5px solid #1B1714;
             }
-            .selected-rating.rating-1 { background: linear-gradient(135deg, rgb(239, 68, 68), rgb(220, 38, 38)); }
-            .selected-rating.rating-2 { background: linear-gradient(135deg, rgb(249, 115, 22), rgb(234, 88, 12)); }
-            .selected-rating.rating-3 { background: linear-gradient(135deg, rgb(34, 197, 94), rgb(22, 163, 74)); }
-            .selected-rating.rating-4 { background: linear-gradient(135deg, rgb(59, 130, 246), rgb(37, 99, 235)); }
-            .selected-rating.rating-5 { background: linear-gradient(135deg, rgb(147, 51, 234), rgb(126, 34, 206)); }
+            .selected-rating.rating-1 { background: #B33A3A; }
+            .selected-rating.rating-2 { background: #C2680F; }
+            .selected-rating.rating-3 { background: #4E6B3B; }
+            .selected-rating.rating-4 { background: #33446E; }
+            .selected-rating.rating-5 { background: #B5481C; }
         `;
     }
 
     generateOverallRatingCSS() {
         return `
             .overall-rating-card {
-                transition: all 0.5s ease;
-                cursor: pointer;
+                background: #FBF6E6;
+                border: 1.5px solid #1B1714;
+                box-shadow: 6px 6px 0 0 #1B1714;
+                color: #1B1714;
+                transition: background .25s ease, color .25s ease;
             }
-            .overall-rating-card.rating-red {
-                background: linear-gradient(135deg, rgb(239, 68, 68), rgb(220, 38, 38)) !important;
-                box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+            .overall-rating-card .overall-num {
+                font-family: 'Fraunces', serif;
+                font-weight: 900;
+                font-size: 2.75rem;
+                line-height: 1;
             }
-            .overall-rating-card.rating-orange {
-                background: linear-gradient(135deg, rgb(249, 115, 22), rgb(234, 88, 12)) !important;
-                box-shadow: 0 8px 25px rgba(249, 115, 22, 0.4);
+            .overall-rating-card .overall-sub {
+                font-size: .7rem;
+                letter-spacing: .18em;
+                text-transform: uppercase;
+                opacity: .75;
+                margin-top: .35rem;
             }
-            .overall-rating-card.rating-green {
-                background: linear-gradient(135deg, rgb(34, 197, 94), rgb(22, 163, 74)) !important;
-                box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
-            }
-            .overall-rating-card.rating-blue {
-                background: linear-gradient(135deg, rgb(59, 130, 246), rgb(37, 99, 235)) !important;
-                box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
-            }
-            .overall-rating-card.rating-purple {
-                background: linear-gradient(135deg, rgb(147, 51, 234), rgb(126, 34, 206)) !important;
-                box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4);
-            }
+            .overall-rating-card.rating-red    { background: #B33A3A; color: #FBF6E6; }
+            .overall-rating-card.rating-orange { background: #C2680F; color: #FBF6E6; }
+            .overall-rating-card.rating-green  { background: #4E6B3B; color: #FBF6E6; }
+            .overall-rating-card.rating-blue   { background: #33446E; color: #FBF6E6; }
+            .overall-rating-card.rating-purple { background: #B5481C; color: #FBF6E6; }
         `;
     }
 
-    getColorRGB(color) {
-        const colors = {
-            green: '34, 197, 94',
-            blue: '59, 130, 246',
-            purple: '147, 51, 234'
-        };
-        return colors[color] || '147, 51, 234';
-    }
-
-    getDarkerColorRGB(color) {
-        const colors = {
-            green: '22, 163, 74',
-            blue: '37, 99, 235',
-            purple: '126, 34, 206'
-        };
-        return colors[color] || '126, 34, 206';
-    }
-
     generateHeader() {
+        const title = this.stripLeadingEmoji(this.config.title) || this.config.roleName;
+        const desc  = this.stripLeadingEmoji(this.config.description) || '';
         return `
-            <div class="text-center mb-4">
-                <h1 class="text-3xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">
-                    ${this.config.title}
+            <div class="mb-8">
+                <div class="text-xs tracking-[0.2em] uppercase text-inkSoft mb-3 flex items-center gap-2">
+                    <span class="inline-block w-6 h-px bg-ink"></span>
+                    <span>MeepleOS · Performance review</span>
+                </div>
+                <h1 class="font-display font-black text-4xl md:text-5xl tracking-tight leading-[0.95]">
+                    ${this.config.roleName}<span class="text-ember">.</span>
                 </h1>
-                <p class="text-base text-gray-600">${this.config.description}</p>
+                <p class="mt-4 text-inkSoft text-base md:text-lg max-w-2xl leading-relaxed">
+                    ${desc || title}
+                </p>
             </div>
         `;
     }
 
     generatePersonInfo() {
         return `
-            <div class="card bg-base-100 shadow-lg mb-4">
-                <div class="card-body p-4">
-                    <h2 class="card-title text-lg mb-3">👤 ${this.config.roleName} Information</h2>
-                    <div class="grid md:grid-cols-2 gap-4">
-                        <div class="form-control">
-                            <input type="text" id="personName" placeholder="Enter the ${this.config.roleName.toLowerCase()}'s name..."  class="typeform-input w-full" />
-                        </div>
-                        <div class="form-control">
-                            <label class="label py-1">
-                                <span class="label-text font-medium">Evaluation Level</span>
-                            </label>
-                            <div class="join w-full" id="levelButtonGroup">
-                                ${this.config.levels.map(level => `
-                                    <button type="button" class="join-item btn flex-1 level-toggle ${level.key}-toggle" data-level="${level.key}">
-                                        <span class="font-semibold">${level.name}</span>
-                                    </button>
-                                `).join('')}
-                            </div>
+            <div class="e-tile p-6">
+                <div class="flex items-baseline justify-between mb-5">
+                    <h2 class="font-display text-xl font-bold tracking-tight">Player</h2>
+                    <span class="text-[0.65rem] tracking-[0.18em] uppercase text-inkSoft">Setup</span>
+                </div>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-[0.7rem] tracking-[0.16em] uppercase text-inkSoft mb-2">Name</label>
+                        <input type="text" id="personName"
+                               placeholder="${this.config.roleName.toLowerCase()}'s name…"
+                               class="typeform-input" />
+                    </div>
+                    <div>
+                        <label class="block text-[0.7rem] tracking-[0.16em] uppercase text-inkSoft mb-2">Level</label>
+                        <div class="join w-full" id="levelButtonGroup">
+                            ${this.config.levels.map(level => `
+                                <button type="button" class="join-item btn flex-1 level-toggle" data-level="${level.key}">
+                                    <span>${level.name}</span>
+                                </button>
+                            `).join('')}
                         </div>
                     </div>
                 </div>
@@ -265,39 +393,38 @@ class EvaluationSystem {
 
     generateRatingsSection() {
         return `
-            <div class="space-y-3">
-                ${this.config.dimensions.map(dimension => this.generateDimensionCard(dimension)).join('')}
+            <div class="space-y-4">
+                ${this.config.dimensions.map((dimension, i) => this.generateDimensionCard(dimension, i)).join('')}
                 ${this.generateOverallRatingCard()}
             </div>
         `;
     }
 
-    generateDimensionCard(dimension) {
+    generateDimensionCard(dimension, index) {
+        const num = String(index + 1).padStart(2, '0');
         return `
-            <div class="card bg-base-100 shadow-lg rating-card">
-                <div class="card-body p-3">
-                    <div class="collapse collapse-arrow">
-                        <input type="checkbox" class="peer" />
-                        <div class="collapse-title text-lg font-medium flex items-center gap-2 py-2">
-                            <span class="selected-rating" data-dimension="${dimension.key}" style="display: none;">0</span>
-                            <span class="text-xl">${dimension.emoji}</span>
-                            <span>${dimension.name}</span>
+            <div class="dimension-card">
+                <div class="collapse collapse-arrow">
+                    <input type="checkbox" class="peer" />
+                    <div class="collapse-title flex items-center gap-3 py-3 pr-12">
+                        <span class="selected-rating" data-dimension="${dimension.key}" style="display: none;">0</span>
+                        <span class="dim-num">${num}.</span>
+                        <span class="dim-title">${dimension.name}</span>
+                    </div>
+                    <div class="collapse-content">
+                        ${dimension.description ? `<p class="text-sm text-inkSoft mb-5 italic">${dimension.description}</p>` : ''}
+                        <div class="grid grid-cols-1 gap-2.5 mb-5">
+                            ${this.config.levels.map((level, i) => this.generateLevelCard(level, dimension.levelBehaviors[level.key], i)).join('')}
                         </div>
-                        <div class="collapse-content">
-                            ${dimension.description ? `<p class="text-sm text-gray-600 mb-4">${dimension.description}</p>` : ''}
-                            <div class="grid grid-cols-1 gap-3 mb-4">
-                                ${this.config.levels.map((level, index) => this.generateLevelCard(level, dimension.levelBehaviors[level.key], index)).join('')}
-                            </div>
-                            <div class="form-control">
-                                <input type="range" min="1" max="5" step="1" value="1" 
-                                       class="range range-primary" data-dimension="${dimension.key}" />
-                                <div class="rating-labels">
-                                    <div class="rating-label" data-value="1">1<br>😰<br>Below Expectations</div>
-                                    <div class="rating-label" data-value="2">2<br>😐<br>Slightly Below</div>
-                                    <div class="rating-label" data-value="3">3<br>😊<br>Meets Expectations</div>
-                                    <div class="rating-label" data-value="4">4<br>🌟<br>Often Exceeds</div>
-                                    <div class="rating-label" data-value="5">5<br>🚀<br>Greatly Exceeds</div>
-                                </div>
+                        <div>
+                            <input type="range" min="1" max="5" step="1" value="1"
+                                   class="range range-primary" data-dimension="${dimension.key}" />
+                            <div class="rating-labels">
+                                <div class="rating-label" data-value="1"><span class="num">1</span>Below</div>
+                                <div class="rating-label" data-value="2"><span class="num">2</span>Almost</div>
+                                <div class="rating-label" data-value="3"><span class="num">3</span>Meets</div>
+                                <div class="rating-label" data-value="4"><span class="num">4</span>Exceeds</div>
+                                <div class="rating-label" data-value="5"><span class="num">5</span>Outstanding</div>
                             </div>
                         </div>
                     </div>
@@ -307,52 +434,45 @@ class EvaluationSystem {
     }
 
     generateLevelCard(level, behavior, index) {
-        const colors = ['green', 'blue', 'purple'];
-        const color = colors[index % colors.length];
+        // Three meeple sizes — small/medium/tall — for junior → senior progression.
+        const sizes = ['0.75em', '1em', '1.25em'];
+        const meepleH = sizes[index % sizes.length];
         return `
-            <div class="level-card ${level.key}-level card bg-${color}-50 border border-${color}-200 p-3">
-                <div class="flex items-start gap-3">
-                    <div class="w-6 h-6 text-${color}-600 mt-0.5 flex-shrink-0">
-                        ${this.getLevelIcon(level.key)}
-                    </div>
-                    <div>
-                        <h4 class="font-semibold text-${color}-800 mb-1">${level.name}</h4>
-                        <p class="text-sm text-${color}-700">${behavior}</p>
-                    </div>
+            <div class="level-card ${level.key}-level">
+                <div class="level-name">
+                    <svg viewBox="0 0 100 120" class="meeple-ico" style="height:${meepleH}" aria-hidden="true">
+                        <path fill="currentColor" d="M 50 4 C 41 4 34 11 34 20 C 34 26 37 31 42 33 L 34 35 C 22 38 12 48 8 56 C 6 60 8 64 14 64 L 38 64 L 32 116 L 46 116 L 50 80 L 54 116 L 68 116 L 62 64 L 86 64 C 92 64 94 60 92 56 C 88 48 78 38 66 35 L 58 33 C 63 31 66 26 66 20 C 66 11 59 4 50 4 Z"/>
+                    </svg>
+                    <span>${level.name}</span>
                 </div>
+                <p class="level-text">${behavior}</p>
             </div>
         `;
     }
 
-    getLevelIcon(levelKey) {
-        // Simple icon representation - you can customize this or use actual SVGs
-        const icons = {
-            junior: '🌱',
-            mid: '🚀', 
-            senior: '⭐'
-        };
-        return icons[levelKey] || '📊';
-    }
-
     generateOverallRatingCard() {
         return `
-            <div class="card bg-gradient-to-r from-purple-500 to-blue-500 text-white shadow-lg overall-rating-card">
-                <div class="card-body p-4">
-                    <h3 class="card-title text-lg mb-2">🎯 Overall Rating</h3>
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="text-center">
-                            <div class="text-3xl font-bold" id="overallRating">0.0</div>
-                            <div class="text-sm opacity-90">Average</div>
-                        </div>
-                        <div class="text-center">
-                            <div class="text-3xl font-bold" id="totalScore">0.0</div>
-                            <div class="text-sm opacity-90">Total</div>
-                        </div>
+            <div class="overall-rating-card p-6">
+                <div class="flex items-baseline justify-between mb-4">
+                    <h3 class="font-display text-xl font-bold tracking-tight">Score</h3>
+                    <span class="text-[0.65rem] tracking-[0.18em] uppercase opacity-75">Running total</span>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="overall-num" id="overallRating">0.0</div>
+                        <div class="overall-sub">Average</div>
                     </div>
-                    <div class="mt-4 flex gap-2">
-                        <button class="btn btn-sm" id="resetBtn">🔄 Reset</button>
-                        <button class="btn btn-sm" id="exportBtn">📤 Export</button>
+                    <div>
+                        <div class="overall-num" id="totalScore">0.0</div>
+                        <div class="overall-sub">Total</div>
                     </div>
+                </div>
+                <div class="mt-6 flex gap-3">
+                    <button class="e-btn ghost" id="resetBtn">Reset</button>
+                    <button class="e-btn" id="exportBtn">
+                        Export
+                        <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+                    </button>
                 </div>
             </div>
         `;
@@ -360,13 +480,14 @@ class EvaluationSystem {
 
     generateChartsSection() {
         return `
-            <div class="space-y-4">
-                <div class="card bg-base-100 shadow-lg">
-                    <div class="card-body p-4">
-                        <h3 class="card-title text-lg mb-4">📊 Evaluation Chart</h3>
-                        <div class="relative h-80">
-                            <canvas id="radarChart"></canvas>
-                        </div>
+            <div class="lg:sticky lg:top-6 space-y-4">
+                <div class="e-tile p-5">
+                    <div class="flex items-baseline justify-between mb-4">
+                        <h3 class="font-display text-lg font-bold tracking-tight">Shape of the review</h3>
+                        <span class="text-[0.65rem] tracking-[0.18em] uppercase text-inkSoft">Radar</span>
+                    </div>
+                    <div class="relative h-80">
+                        <canvas id="radarChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -375,50 +496,62 @@ class EvaluationSystem {
 
     initChart() {
         const ctx = document.getElementById('radarChart').getContext('2d');
+        const INK = '#1B1714';
+        const EMBER = '#B5481C';
+        const PAPER_LIGHT = '#FBF6E6';
         this.chart = new Chart(ctx, {
             type: 'radar',
             data: {
                 labels: this.config.dimensions.map(d => d.name),
                 datasets: [{
-                    label: this.personInfo.name || `${this.config.roleName} Rating`,
+                    label: this.personInfo.name || `${this.config.roleName}`,
                     data: Object.values(this.ratings),
-                    backgroundColor: 'rgba(147, 51, 234, 0.2)',
-                    borderColor: 'rgb(147, 51, 234)',
-                    pointBackgroundColor: 'rgb(147, 51, 234)',
-                    pointBorderColor: '#fff',
-                    pointHoverBackgroundColor: '#fff',
-                    pointHoverBorderColor: 'rgb(147, 51, 234)',
-                    borderWidth: 3,
-                    pointRadius: 6,
-                    pointHoverRadius: 8
+                    backgroundColor: 'rgba(181, 72, 28, 0.18)',
+                    borderColor: EMBER,
+                    pointBackgroundColor: EMBER,
+                    pointBorderColor: PAPER_LIGHT,
+                    pointHoverBackgroundColor: PAPER_LIGHT,
+                    pointHoverBorderColor: EMBER,
+                    borderWidth: 2.5,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    pointBorderWidth: 2
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
-                elements: { line: { borderWidth: 3 } },
+                elements: { line: { borderWidth: 2.5 } },
                 scales: {
                     r: {
                         beginAtZero: true,
                         min: 0,
                         max: 5,
-                        angleLines: { display: true, color: 'rgba(0, 0, 0, 0.1)' },
-                        grid: { color: 'rgba(0, 0, 0, 0.1)' },
-                        pointLabels: { font: { size: 12 } },
+                        angleLines: { display: true, color: 'rgba(27, 23, 20, 0.18)' },
+                        grid: { color: 'rgba(27, 23, 20, 0.14)' },
+                        pointLabels: {
+                            font: { size: 12, family: 'Fraunces, serif', weight: '700' },
+                            color: INK
+                        },
                         ticks: {
                             beginAtZero: true,
                             min: 0,
                             max: 5,
                             stepSize: 1,
                             showLabelBackdrop: false,
-                            font: { size: 10 }
+                            color: 'rgba(74, 63, 51, 0.7)',
+                            font: { size: 10, family: 'Inter Tight, sans-serif' }
                         }
                     }
                 },
                 plugins: {
                     legend: {
                         position: 'bottom',
-                        labels: { padding: 20, font: { size: 14 } }
+                        labels: {
+                            padding: 16,
+                            color: INK,
+                            font: { size: 13, family: 'Inter Tight, sans-serif', weight: '600' }
+                        }
                     }
                 }
             }
@@ -475,7 +608,7 @@ class EvaluationSystem {
         document.querySelectorAll('.rating-label').forEach(label => {
             label.addEventListener('click', (e) => {
                 const value = parseInt(e.currentTarget.dataset.value);
-                const slider = e.currentTarget.closest('.form-control').querySelector('.range');
+                const slider = e.currentTarget.closest('.rating-labels').previousElementSibling;
                 const dimension = slider.dataset.dimension;
                 
                 slider.value = value;
@@ -597,7 +730,7 @@ class EvaluationSystem {
                 slider.dispatchEvent(inputEvent);
                 
                 const percentage = ((value - slider.min) / (slider.max - slider.min)) * 100;
-                slider.style.background = `linear-gradient(to right, hsl(var(--p)) 0%, hsl(var(--p)) ${percentage}%, hsl(var(--b3)) ${percentage}%, hsl(var(--b3)) 100%)`;
+                slider.style.background = `linear-gradient(to right, #B5481C 0%, #B5481C ${percentage}%, #E7DBB7 ${percentage}%, #E7DBB7 100%)`;
                 
                 if (this.ratingsSet[dimension]) {
                     this.updateRatingLabels(slider, value);
