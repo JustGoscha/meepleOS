@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="meeple">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved reviews · MeepleOS</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter+Tight:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              paper:'#F2E9D2', paperLight:'#FBF6E6', paperDeep:'#E7DBB7',
+              ink:'#1B1714', inkSoft:'#4A3F33',
+              ember:'#B5481C', moss:'#4E6B3B', indigo:'#33446E', mustard:'#C99A2E',
+            },
+            fontFamily: {
+              display: ['Fraunces', 'ui-serif', 'Georgia', 'serif'],
+              body:    ['"Inter Tight"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            }
+          }
+        }
+      }
+    </script>
+
+    <style>
+      html, body { background-color: #F2E9D2; color: #1B1714; }
+      body { font-family: 'Inter Tight', system-ui, sans-serif; }
+      .font-display { font-family: 'Fraunces', Georgia, serif; }
+
+      body::before {
+        content: '';
+        position: fixed; inset: 0; pointer-events: none; z-index: 0;
+        opacity: .30; mix-blend-mode: multiply;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='1.4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.12  0 0 0 0 0.10  0 0 0 0 0.07  0 0 0 0.32 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+      }
+      main, header { position: relative; z-index: 1; }
+
+      .tile {
+        background: #FBF6E6;
+        border: 1.5px solid #1B1714;
+        box-shadow: 6px 6px 0 0 #1B1714;
+      }
+      .tile-flat {
+        background: #FBF6E6;
+        border: 1.5px solid #1B1714;
+      }
+
+      .e-btn {
+        display: inline-flex; align-items: center; gap: .4rem;
+        background: #1B1714; color: #FBF6E6;
+        border: 1.5px solid #1B1714;
+        box-shadow: 3px 3px 0 0 #1B1714;
+        padding: .55rem 1rem;
+        font-weight: 600;
+        font-size: .85rem;
+        cursor: pointer;
+        transition: transform .1s ease, box-shadow .1s ease;
+      }
+      .e-btn:hover { transform: translate(-2px,-2px); box-shadow: 5px 5px 0 0 #1B1714; }
+      .e-btn:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 0 #1B1714; }
+      .e-btn.ghost { background: #FBF6E6; color: #1B1714; }
+
+      .e-btn-sm {
+        display: inline-flex; align-items: center; gap: .3rem;
+        background: #FBF6E6; color: #1B1714;
+        border: 1px solid #1B1714;
+        box-shadow: 2px 2px 0 0 #1B1714;
+        padding: .35rem .7rem;
+        font-weight: 600;
+        font-size: .75rem;
+        cursor: pointer;
+        transition: transform .1s ease, box-shadow .1s ease, background .1s ease, color .1s ease;
+        text-decoration: none;
+      }
+      .e-btn-sm:hover { transform: translate(-1px,-1px); box-shadow: 3px 3px 0 0 #1B1714; }
+      .e-btn-sm:active { transform: translate(1px,1px); box-shadow: 1px 1px 0 0 #1B1714; }
+      .e-btn-sm.primary { background: #1B1714; color: #FBF6E6; }
+      .e-btn-sm.danger:hover { background: #B33A3A; color: #FBF6E6; }
+
+      .role-section + .role-section { margin-top: 2.5rem; }
+
+      .review-card {
+        background: #FBF6E6;
+        border: 1.5px solid #1B1714;
+        padding: 1.1rem 1.25rem;
+        position: relative;
+        transition: transform .1s ease, box-shadow .1s ease;
+      }
+      .review-card:hover { transform: translate(-1px,-1px); box-shadow: 4px 4px 0 0 #1B1714; }
+      .review-card + .review-card { margin-top: .7rem; }
+      .review-card .name {
+        font-family: 'Fraunces', serif;
+        font-weight: 800;
+        font-size: 1.2rem;
+        letter-spacing: -0.005em;
+      }
+      .review-card .meta { font-size: .75rem; color: #4A3F33; }
+      .review-card .pill {
+        display: inline-block;
+        border: 1px solid #1B1714;
+        padding: .05rem .5rem;
+        font-size: .68rem;
+        font-weight: 600;
+        letter-spacing: .04em;
+        background: #F2E9D2;
+        margin-left: .35rem;
+      }
+      .review-card .score-num {
+        font-family: 'Fraunces', serif;
+        font-weight: 900;
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+      .review-card .verdict-tag {
+        display: inline-block;
+        font-family: 'Fraunces', serif;
+        font-weight: 800;
+        font-size: .85rem;
+        padding: .2rem .55rem;
+        color: #FBF6E6;
+        background: #4A3F33;
+      }
+      .review-card .verdict-tag.verdict-purple { background: #B5481C; }
+      .review-card .verdict-tag.verdict-blue   { background: #33446E; }
+      .review-card .verdict-tag.verdict-green  { background: #4E6B3B; }
+      .review-card .verdict-tag.verdict-orange { background: #C2680F; }
+      .review-card .verdict-tag.verdict-red    { background: #B33A3A; }
+
+      .empty {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: #4A3F33;
+        font-style: italic;
+      }
+    </style>
+</head>
+<body class="min-h-screen">
+
+  <header class="border-b-2 border-ink">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+      <a href="../../" class="flex items-center gap-3">
+        <svg viewBox="0 0 100 120" class="h-7 w-auto text-ink" aria-hidden="true">
+          <path fill="currentColor" stroke="currentColor" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" d="M 50 4 C 62 4 70 12 70 22 C 70 30 66 36 60 40 L 65 42 C 80 44 92 52 95 62 C 96 66 94 70 89 70 L 67 70 L 71 114 L 54 114 L 50 76 L 46 114 L 29 114 L 33 70 L 11 70 C 6 70 4 66 5 62 C 8 52 20 44 35 42 L 40 40 C 34 36 30 30 30 22 C 30 12 38 4 50 4 Z"/>
+        </svg>
+        <span class="font-display text-lg font-black tracking-tight">MeepleOS</span>
+      </a>
+      <nav class="flex items-center gap-5 text-sm font-medium">
+        <a href="../" class="hover:underline underline-offset-4 decoration-2">← All tools</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="max-w-6xl mx-auto px-6 pt-14 pb-8">
+      <div class="flex items-center gap-3 text-xs tracking-[0.2em] uppercase text-inkSoft mb-6">
+        <a href="../" class="hover:text-ink">Performance reviews</a>
+        <span class="opacity-60">/</span>
+        <span>Dashboard</span>
+      </div>
+      <div class="grid md:grid-cols-12 gap-8 items-end">
+        <div class="md:col-span-8">
+          <h1 class="font-display font-black text-5xl md:text-6xl tracking-tight leading-[0.95]">
+            Saved reviews<span class="text-ember">.</span>
+          </h1>
+          <p class="mt-5 text-inkSoft text-base md:text-lg max-w-xl leading-relaxed">
+            Your finalized snapshots, grouped by role. Lives in this browser — no server, no sharing unless you export.
+          </p>
+        </div>
+        <div class="md:col-span-4 md:text-right">
+          <div class="flex md:justify-end gap-2 flex-wrap">
+            <label class="e-btn ghost cursor-pointer">
+              Import
+              <input type="file" id="importInput" accept="application/json,.json" class="hidden">
+            </label>
+            <button class="e-btn" id="exportAllBtn">Export all</button>
+          </div>
+          <p class="text-xs tracking-[0.16em] uppercase text-inkSoft mt-3" id="summary">—</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="max-w-6xl mx-auto px-6 pb-20">
+      <div id="reviewsRoot"></div>
+    </section>
+  </main>
+
+  <script>
+    // Registry of roles for grouping + deep links.
+    const ROLES = [
+      {
+        key: 'software_engineer',
+        name: 'Software Engineer',
+        path: '../software-engineers-new/',
+        accent: '#B5481C',
+        levels: { junior: 'Junior', mid: 'Mid-Level', senior: 'Senior' }
+      },
+      {
+        key: 'product_manager',
+        name: 'Product Manager',
+        path: '../product/',
+        accent: '#33446E',
+        levels: { associate: 'Associate', pm: 'PM', senior: 'Senior' }
+      },
+      {
+        key: 'designer',
+        name: 'Designer',
+        path: '../design/',
+        accent: '#4E6B3B',
+        levels: { junior: 'Junior', mid: 'Mid-Level', senior: 'Senior' }
+      },
+      {
+        key: 'ai_product_engineer',
+        name: 'AI Product Engineer',
+        path: '../ai-product-engineers/',
+        accent: '#C99A2E',
+        levels: { junior: 'Junior', mid: 'Mid-Level', senior: 'Senior' }
+      },
+    ];
+
+    const dateFmt = new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'short', day: '2-digit' });
+    const timeFmt = new Intl.DateTimeFormat(undefined, { hour: '2-digit', minute: '2-digit' });
+
+    function getVerdict(avg) {
+      if (avg >= 4.0) return { label: 'Outstanding candidate', cls: 'verdict-purple' };
+      if (avg >= 3.5) return { label: 'High performer',        cls: 'verdict-blue'   };
+      if (avg >= 3.0) return { label: 'On the bar',            cls: 'verdict-green'  };
+      if (avg >= 2.5) return { label: 'Below the bar',         cls: 'verdict-orange' };
+      return            { label: 'Significant gaps',           cls: 'verdict-red'    };
+    }
+
+    function escapeHTML(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
+    }
+
+    function roleStorageKey(role)  { return `evaluation_${role.key}_saved`; }
+
+    function getReviews(role) {
+      try { return JSON.parse(localStorage.getItem(roleStorageKey(role))) || []; }
+      catch { return []; }
+    }
+    function setReviews(role, arr) {
+      localStorage.setItem(roleStorageKey(role), JSON.stringify(arr));
+    }
+
+    function reviewAverage(r) {
+      if (typeof r.average === 'number') return r.average;
+      if (!r?.ratingsSet || !r?.ratings) return 0;
+      const keys = Object.keys(r.ratingsSet).filter(k => r.ratingsSet[k]);
+      if (!keys.length) return 0;
+      return keys.reduce((a, k) => a + (r.ratings[k] || 0), 0) / keys.length;
+    }
+
+    function fileSlug(name) {
+      return String(name).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+    }
+    function downloadJSON(filename, obj) {
+      const blob = new Blob([JSON.stringify(obj, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename; a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function render() {
+      const root = document.getElementById('reviewsRoot');
+      const summary = document.getElementById('summary');
+
+      const rolesWithData = ROLES.map(role => ({ role, reviews: getReviews(role) }))
+                                  .filter(({ reviews }) => reviews.length > 0);
+      const total = rolesWithData.reduce((sum, { reviews }) => sum + reviews.length, 0);
+
+      summary.textContent = total
+        ? `${total} review${total === 1 ? '' : 's'} · ${rolesWithData.length} role${rolesWithData.length === 1 ? '' : 's'}`
+        : 'no saved reviews yet';
+
+      if (!total) {
+        root.innerHTML = `
+          <div class="tile p-10 text-center">
+            <p class="font-display text-2xl font-bold mb-3">Nothing saved yet</p>
+            <p class="text-inkSoft max-w-md mx-auto leading-relaxed">
+              Run a review, fill it in, then hit <strong class="text-ink">Save review</strong> in the score card. Finalized reviews land here.
+            </p>
+            <div class="mt-6">
+              <a href="../" class="e-btn">Pick a role →</a>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      root.innerHTML = rolesWithData.map(({ role, reviews }) => `
+        <section class="role-section">
+          <div class="flex items-baseline justify-between mb-4 flex-wrap gap-2">
+            <div class="flex items-baseline gap-3">
+              <span class="inline-block w-2 h-2 rounded-full" style="background:${role.accent}"></span>
+              <h2 class="font-display text-2xl font-bold tracking-tight">${escapeHTML(role.name)}</h2>
+              <span class="text-xs tracking-[0.16em] uppercase text-inkSoft">${reviews.length} review${reviews.length === 1 ? '' : 's'}</span>
+            </div>
+          </div>
+          <div class="reviews-list">
+            ${reviews.map(r => renderReview(role, r)).join('')}
+          </div>
+        </section>
+      `).join('');
+    }
+
+    function renderReview(role, r) {
+      const d = new Date(r.savedAt);
+      const dateStr = isNaN(d) ? '—' : dateFmt.format(d);
+      const timeStr = isNaN(d) ? ''  : timeFmt.format(d);
+      const levelName = role.levels?.[r.personInfo?.level] || (r.personInfo?.level ? r.personInfo.level : '—');
+      const avg = reviewAverage(r);
+      const verdict = getVerdict(avg);
+      const name = r.personInfo?.name || 'Untitled';
+      const totalDims = r.ratings ? Object.keys(r.ratings).length : 0;
+      const ratedDims = r.ratingsSet ? Object.values(r.ratingsSet).filter(Boolean).length : 0;
+      const partial = ratedDims < totalDims;
+
+      return `
+        <article class="review-card">
+          <div class="grid md:grid-cols-12 gap-4 items-start">
+            <div class="md:col-span-5">
+              <div class="name">${escapeHTML(name)}<span class="pill">${escapeHTML(levelName)}</span></div>
+              <div class="meta mt-1">${dateStr}${timeStr ? ' · ' + timeStr : ''}</div>
+            </div>
+            <div class="md:col-span-4 flex items-center gap-3">
+              <div class="score-num">${avg.toFixed(1)}</div>
+              <div>
+                <span class="verdict-tag ${verdict.cls}">${verdict.label}</span>
+                ${partial ? `<div class="meta mt-1">partial · ${ratedDims}/${totalDims} rated</div>` : ''}
+              </div>
+            </div>
+            <div class="md:col-span-3 flex md:justify-end items-center gap-2 flex-wrap">
+              <a class="e-btn-sm primary" href="${role.path}?review=${encodeURIComponent(r.id)}">Open</a>
+              <button class="e-btn-sm" data-action="export" data-role="${role.key}" data-id="${escapeHTML(r.id)}">Export</button>
+              <button class="e-btn-sm danger" data-action="delete" data-role="${role.key}" data-id="${escapeHTML(r.id)}">Delete</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }
+
+    function findRole(key) { return ROLES.find(r => r.key === key); }
+
+    function deleteReview(roleKey, id) {
+      const role = findRole(roleKey);
+      if (!role) return;
+      if (!confirm('Delete this saved review?')) return;
+      setReviews(role, getReviews(role).filter(r => r.id !== id));
+      render();
+    }
+
+    function exportReview(roleKey, id) {
+      const role = findRole(roleKey);
+      if (!role) return;
+      const review = getReviews(role).find(r => r.id === id);
+      if (!review) return;
+      const payload = { role: { key: role.key, name: role.name }, ...review };
+      const date = (review.savedAt || new Date().toISOString()).slice(0, 10);
+      const nameSlug = fileSlug(review.personInfo?.name || 'unnamed');
+      downloadJSON(`${fileSlug(role.name)}_${nameSlug}_${date}.json`, payload);
+    }
+
+    function exportAll() {
+      const groups = ROLES.map(role => ({ role: { key: role.key, name: role.name }, reviews: getReviews(role) }))
+                          .filter(g => g.reviews.length);
+      const total = groups.reduce((s, g) => s + g.reviews.length, 0);
+      if (!total) { alert('No saved reviews to export.'); return; }
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        count: total,
+        groups
+      };
+      const date = new Date().toISOString().slice(0, 10);
+      downloadJSON(`meepleos_reviews_${date}.json`, payload);
+    }
+
+    function importFile(file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        let parsed;
+        try { parsed = JSON.parse(e.target.result); }
+        catch (err) { alert('Could not parse file: ' + err.message); return; }
+
+        // Supported shapes:
+        // 1) { groups: [{ role: {key,name}, reviews: [...] }] } — dashboard export-all
+        // 2) { role: {key,name}, reviews: [...] }              — per-role export-all
+        // 3) { role: {key,name}, ...review }                    — single saved review
+        // 4) { ratings, personInfo, ... }                       — in-progress export, assigned by user
+        let intake = []; // { roleKey, review }
+
+        if (Array.isArray(parsed.groups)) {
+          for (const g of parsed.groups) {
+            const k = g.role?.key;
+            if (!k) continue;
+            for (const r of (g.reviews || [])) intake.push({ roleKey: k, review: r });
+          }
+        } else if (parsed.role?.key && Array.isArray(parsed.reviews)) {
+          for (const r of parsed.reviews) intake.push({ roleKey: parsed.role.key, review: r });
+        } else if (parsed.role?.key && parsed.ratings) {
+          intake.push({ roleKey: parsed.role.key, review: parsed });
+        } else if (parsed.config?.key && parsed.ratings) {
+          intake.push({ roleKey: parsed.config.key, review: parsed });
+        } else {
+          alert('Unrecognized file shape. Expected a saved-reviews export or single review.'); return;
+        }
+
+        let added = 0, skippedRole = 0, skippedDup = 0;
+        const buckets = new Map(); // roleKey -> existing array
+        const landedBy = new Map(); // roleName -> count
+        for (const { roleKey, review } of intake) {
+          const role = findRole(roleKey);
+          if (!role) {
+            skippedRole++;
+            console.warn('[import] unknown role key:', roleKey, '— item skipped', review);
+            continue;
+          }
+          if (!buckets.has(roleKey)) buckets.set(roleKey, getReviews(role));
+          const list = buckets.get(roleKey);
+          if (!review.id) review.id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+          if (!review.savedAt) review.savedAt = review.timestamp || new Date().toISOString();
+          if (list.some(x => x.id === review.id)) { skippedDup++; continue; }
+          list.unshift(review);
+          added++;
+          landedBy.set(role.name, (landedBy.get(role.name) || 0) + 1);
+        }
+        for (const [roleKey, list] of buckets.entries()) {
+          setReviews(findRole(roleKey), list);
+        }
+        render();
+        const breakdown = [...landedBy.entries()].map(([n, c]) => `${c} → ${n}`).join(', ');
+        const parts = [`Imported ${added}${breakdown ? ` (${breakdown})` : ''}`];
+        if (skippedDup)  parts.push(`${skippedDup} duplicate${skippedDup === 1 ? '' : 's'} skipped (same id)`);
+        if (skippedRole) parts.push(`${skippedRole} unknown-role item${skippedRole === 1 ? '' : 's'} skipped`);
+        alert(parts.join(' · '));
+      };
+      reader.readAsText(file);
+    }
+
+    document.getElementById('reviewsRoot').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const id = btn.dataset.id;
+      const roleKey = btn.dataset.role;
+      if (btn.dataset.action === 'delete') deleteReview(roleKey, id);
+      if (btn.dataset.action === 'export') exportReview(roleKey, id);
+    });
+    document.getElementById('exportAllBtn').addEventListener('click', exportAll);
+    document.getElementById('importInput').addEventListener('change', (e) => {
+      const f = e.target.files?.[0];
+      if (f) importFile(f);
+      e.target.value = '';
+    });
+
+    render();
+  </script>
+</body>
+</html>
